@@ -10,14 +10,14 @@
 
     try {
       // The full URL to your Django endpoint
-      const response = await fetch('http://127.0.0.1:8000/hello/');
+      const response = await fetch('http://127.0.0.1:8000/');
     
       if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status}`);
       }
 
       const data = await response.json();
-      apiMessage = data.message; // Update the variable with the message from the JSON
+      apiMessage = data.title; // Update the variable with the message from the JSON
 
     } catch (error) {
       // If something goes wrong, display an error message

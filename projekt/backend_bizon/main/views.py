@@ -8,3 +8,8 @@ from rest_framework import status
 def hello_world(request):
     content = {'message': 'Hello, World! The connection from Django is successful!'}
     return Response(content, status=status.HTTP_200_OK)
+
+@api_view(['GET'])
+def index(request):
+    content = {'title': 'Mam smaka na ptaka'}
+    return Response(content, status=status.HTTP_200_OK)

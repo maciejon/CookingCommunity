@@ -13,12 +13,19 @@
   <main>
     <slot />
   </main>
-
   <footer>
     <p>&copy; {new Date().getFullYear()} mam smaka na ptaka. Wszelkie prawa zastrzeżone.</p>
   </footer>
 </div>
 
 <style>
-
+  footer {
+    background-color: rgb(240,240,240);
+    border-top: 1px solid rgb(224,224,224); 
+    text-align: center; 
+    padding: 20px; 
+    color: rgb(80, 80, 80); 
+    font-size: 14px;
+    width: 100%;
+  }
 </style>

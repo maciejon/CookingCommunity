@@ -4,7 +4,12 @@
 <header> <!-- nagłówek strony  -->
   <img class="main_logo" src="/main_logo.png" alt = "mam smaka naptaka">
   <nav> <!--  panel nawigacyjny  -->
-  <Dropdown />
+  <Dropdown
+    title="mam"
+    content = {[
+      {etykieta: "mam", wartosc: "1"},
+      {etykieta: "smaka", wartosc : "2"}
+    ]} />
   </nav>
 </header>
 

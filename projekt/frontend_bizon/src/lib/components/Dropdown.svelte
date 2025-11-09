@@ -1,14 +1,21 @@
+<!-- /** title - tytuł dropdownu
+* content - tablica opcji dropdownu. etykieta jest wyświetlana a wartość moze być uzywana do czegos innego np. url
+*/ -->
 <script>
-    export let dropdown_title;
-    /* @type {{etykieta: string, wartosc: string} */
-    export let dropdown_content = [];
+    export let title;
+    // np. w panelu navbar wartosc to bedzie url
+    /* @type {{etykieta: string, wartosc: string} */ 
+    export let content = [];
 </script>
 
 <div class="dropdown">
-    {dropdown_title}
+    {title}
     <div class="dropdown-content">
-        {#each dropdown_content as dropdown_option}
-            {dropdown_option}
+        {#each content as dropdown_option}
+          <div class="dropdown-option">
+            {dropdown_option.etykieta}
+            <br>
+          </div>
         {/each}
     </div>
 </div> 
@@ -21,5 +28,10 @@
 
 .dropdown:hover .dropdown-content {
   display: block;
+}
+
+.dropdown-option {
+    margin: 1px;
+    border: 1px solid rgb(224,224,224);
 }
 </style>

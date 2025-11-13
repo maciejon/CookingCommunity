@@ -5,12 +5,13 @@
     export let title;
     /*@type {boolean} */
     export let is_child = false;
+    export let font_size = '16px';
     // np. w panelu navbar wartosc to bedzie url
     /* @type {{etykieta: string, wartosc?: string, children?: any[]}[]}  */ 
     export let content = [];
 </script>
 
-<div class="dropdown" class:is-child={is_child} >
+<div class="dropdown" class:is-child={is_child} style:font-size={font_size}>
   {#if content && content.length > 0}
     {title}
     <div class="dropdown-content">
@@ -18,7 +19,7 @@
         <div class="dropdown-option">
              {#if dropdown_option.children}
              <div class="dropdown-child">
-             <svelte:self title={dropdown_option.etykieta} content={dropdown_option.children} is_child={true} />
+             <svelte:self title={dropdown_option.etykieta} content={dropdown_option.children} is_child={true} font_size={font_size}/>
              </div>
              {:else}
              <div class="no_children">
@@ -35,17 +36,23 @@
 .dropdown{
   position: relative;
   padding: 5px;
+  padding-right: 8px;
 }
 
 .no_children{
   padding:5px;
+  padding-right: 8px;
 }
 
 .dropdown-content {
   display: none;
   position: absolute;
   /* border: 1px solid rgb(224,224,224); */
-    border: 1px solid rgb(0,0,0);
+  border: 1px solid rgb(0,0,0);
+  /* z-index: 10; */
+  background-color: white;
+  padding-top: 8px;
+  padding-bottom: 8px;
 }
 
 .dropdown:hover > .dropdown-content { /* strzałka > sprawia że działa to tylko na dziecko 1 rzędu*/
@@ -55,6 +62,7 @@
 .dropdown-option {
   color: black;
   /* padding: 5px; */
+  padding-left: 8px;
 
 }
 
@@ -64,7 +72,7 @@
 }
 
 .dropdown.is-child > .dropdown-content {
-  left: 100%; 
+  left: 100%;
   top: 0; 
 }
 </style>

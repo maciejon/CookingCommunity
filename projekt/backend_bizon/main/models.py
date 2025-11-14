@@ -5,6 +5,9 @@ from decimal import Decimal
 class IngredientCategory(models.Model):
     name = models.CharField(max_length=255)
 
+    class Meta:
+        verbose_name_plural = "Ingredient Categories"
+
 class Ingredient(models.Model):
     name = models.CharField(max_length=255)
     category = models.ForeignKey(IngredientCategory, on_delete=models.SET_NULL, null=True)
@@ -13,7 +16,10 @@ class Ingredient(models.Model):
         return f"Ingredient {self.name} from {self.category} category"
 
 class RecipieCategory(models.Model):
-    name = models.CharField(max_length=255)    
+    name = models.CharField(max_length=255) 
+
+    class Meta:
+        verbose_name_plural = "Recipe Categories"   
 
 class Recipe(models.Model):
     name = models.CharField(max_length=255)
@@ -21,7 +27,7 @@ class Recipe(models.Model):
     description = models.TextField(blank=True)
     time = models.PositiveIntegerField()
 
-class RecipeSteps(models.Model):
+class RecipeStep(models.Model):
     recipe = models.ForeignKey(Recipe, on_delete=models.CASCADE)
     text = models.TextField()
 

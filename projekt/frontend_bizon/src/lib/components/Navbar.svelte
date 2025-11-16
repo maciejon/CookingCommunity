@@ -156,12 +156,12 @@
     </div>
 
     <div style="width: 50%; margin: auto; ">
-      <form>
-        <input type="text" id="search_query" name="search_query" placeholder="Wyszukaj" style="border: 1px solid black; font-size:24px;">
-        <button type="submit">
-          <img src="/search_icon.png" alt="Wyszukaj" style="height:26px">
-        </button>
-      </form>
+      <form class="search-bar" method="POST">
+                <input type="text" name="query" placeholder="Wyszukaj..." class="search-input">
+                <button type="submit" class="search-button">
+                    <img src="/search_icon.png" alt="Szukaj" class="search-icon">
+                </button>
+            </form>
     </div>
 
   </div>
@@ -191,4 +191,45 @@
   .second-div{
     display: flex;
   }
+  .search-bar {
+    display: flex;
+    align-items: center;
+    background-color: #e0e0e0; 
+    border-radius: 5px;
+    padding: 5px;
+    width: 100%;
+    max-width: 500px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.search-input {
+    flex-grow: 1;
+    border: none;
+    outline: none;
+    background: transparent;
+    padding: 5px 10px;
+    font-size: 16px;
+}
+
+.search-button {
+    background-color: #D60036;
+    border: none;
+    padding: 5px;
+    border-radius: 5px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.3s ease;
+}
+
+.search-icon {
+    width: 16px;
+    height: 16px;
+    object-fit: contain;
+}
+
+.search-button:hover {
+    transform: scale(1.1);
+}
 </style>

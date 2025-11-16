@@ -37,11 +37,13 @@
   position: relative;
   padding: 5px;
   padding-right: 8px;
+  cursor: default;
 }
 
 .no_children{
   padding:5px;
   padding-right: 8px;
+  cursor: pointer;
 }
 
 .dropdown-content {
@@ -53,6 +55,8 @@
   background-color: white;
   padding-top: 8px;
   padding-bottom: 8px;
+  filter: drop-shadow(3px 3px 2px rgba(0, 0, 0, 0.4));
+
 }
 
 .dropdown:hover > .dropdown-content { /* strzałka > sprawia że działa to tylko na dziecko 1 rzędu*/

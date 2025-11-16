@@ -2,38 +2,48 @@ from django.db import models
 from django.contrib.auth.models import User
 from decimal import Decimal
 
-class IngredientCategory(models.Model):
-    name = models.CharField(max_length=255)
+class Category(models.Model):
+    name = models.CharField(max_length=255, unique=True)
+    slug = models.SlugField(max_length=100, unique=True, blank=True)
+
+    def __str__(self):
+        return f"{self.name}"
 
     class Meta:
-        verbose_name_plural = "Ingredient Categories"
+        verbose_name_plural = "Categories"
+
+class Recipe(models.Model):
+    name = models.CharField(max_length=255)
+    categories = models.ManyToManyField(Category, related_name="recipes")
+
+    description = models.TextField(blank=True)
+    preparation_time = models.PositiveIntegerField()
+    number_of_views = models.PositiveIntegerField(default=0)
+
+    image = models.ImageField(upload_to='recipes/', blank=True, null=True)
+
+    slug = models.SlugField(max_length=255, unique=True, blank=True)
+
+class RecipeStep(models.Model):
+    step_number = models.PositiveIntegerField()
+    recipe = models.ForeignKey(Recipe, on_delete=models.CASCADE)
+    text = models.TextField()
+
+    class Meta:
+        ordering = ['step_number']
+        unique_together = ('recipe', 'step_number')
 
 class Ingredient(models.Model):
     name = models.CharField(max_length=255)
-    category = models.ForeignKey(IngredientCategory, on_delete=models.SET_NULL, null=True)
+    # category = models.ForeignKey(Category, on_delete=models.SET_NULL, null=True, blank=True)
 
     def __str__(self):
         return f"Ingredient {self.name} from {self.category} category"
 
-class RecipieCategory(models.Model):
-    name = models.CharField(max_length=255) 
-
-    class Meta:
-        verbose_name_plural = "Recipe Categories"   
-
-class Recipe(models.Model):
-    name = models.CharField(max_length=255)
-    category = models.ForeignKey(RecipieCategory, on_delete=models.SET_NULL, null=True)
-    description = models.TextField(blank=True)
-    time = models.PositiveIntegerField()
-
-class RecipeStep(models.Model):
-    recipe = models.ForeignKey(Recipe, on_delete=models.CASCADE)
-    text = models.TextField()
-
 class RecipeIngredient(models.Model):
     recipe = models.ForeignKey(Recipe, on_delete=models.CASCADE)
-    ingredient = models.ForeignKey(Ingredient, on_delete=models.CASCADE)
+    # ingredient = models.CharField(max_length=255)
+    ingredient = models.ForeignKey(Ingredient, on_delete=models.SET_NULL)
 
     # rozne jednostki kuchenne
     class Unit(models.TextChoices):

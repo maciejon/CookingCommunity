@@ -12,4 +12,5 @@ def hello_world(request):
 @api_view(['GET'])
 def index(request):
     content = {'title': 'Mam smaka na ptaka'}
+    
     return Response(content, status=status.HTTP_200_OK)

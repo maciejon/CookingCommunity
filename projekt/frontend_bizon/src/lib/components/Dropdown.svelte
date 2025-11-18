@@ -60,12 +60,11 @@
   position: absolute;
   /* border: 1px solid rgb(224,224,224); */
   border: 1px solid rgb(0,0,0);
-  /* z-index: 10; */
+  z-index: 10;
   background-color: white;
   padding-top: 8px;
   padding-bottom: 8px;
   filter: drop-shadow(3px 3px 2px rgba(0, 0, 0, 0.4));
-
 }
 
 .dropdown:hover > .dropdown-content { /* strzałka > sprawia że działa to tylko na dziecko 1 rzędu*/

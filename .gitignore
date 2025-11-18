@@ -1,4 +1,6 @@
 .env
-.venv
 *.pyc
-.gitignore
+
+__pycache__
+
+TODO.md

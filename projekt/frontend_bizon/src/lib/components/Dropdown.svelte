@@ -13,7 +13,9 @@
 
 <div class="dropdown" class:is-child={is_child} style:font-size={font_size}>
   {#if content && content.length > 0}
-    {title}
+    <a href="{title}">
+      {title}
+    </a>
     <div class="dropdown-content">
         {#each content as dropdown_option}
         <div class="dropdown-option">
@@ -23,7 +25,9 @@
              </div>
              {:else}
              <div class="no_children">
+              <a href="{dropdown_option.wartosc}">
             {dropdown_option.etykieta}
+            </a>  
             </div>
             {/if}  
           </div>
@@ -33,6 +37,10 @@
 </div>
 
 <style>
+  a{
+    color: inherit;
+    text-decoration: none;
+  }
 .dropdown{
   position: relative;
   padding: 5px;

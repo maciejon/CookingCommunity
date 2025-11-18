@@ -1,62 +1,44 @@
 <script>
-  import { onMount } from 'svelte';
+    let daneZBackendu = 'Oczekiwanie na dane...';
 
-  let apiMessage = 'Click the button to test the connection...';
-  let errorMessage = '';
+  // Funkcja, która będzie wysyłać zapytanie GET
+  async function pobierzDane(zrodlo) {
+    // Ustawiamy podstawowy adres URL naszego API
+    const baseUrl = 'http://127.0.0.1:8000';
+    
+    // Tworzymy obiekt URLSearchParams, aby bezpiecznie dodać parametry
+    const params = new URLSearchParams({
+      zrodlo: zrodlo  // np. zrodlo=przycisk1
+    });
 
-  async function testApiConnection() {
-    errorMessage = ''; // Clear previous errors
-    apiMessage = 'Fetching...';
+    // Pełny adres URL z parametrem zapytania
+    const url = `${baseUrl}?${params.toString()}`;
+
+    console.log(`Wysyłam zapytanie na adres: ${url}`);
 
     try {
-      // The full URL to your Django endpoint
-      const response = await fetch('http://127.0.0.1:8000/');
-    
-      if (!response.ok) {
-        throw new Error(`HTTP error! Status: ${response.status}`);
+      const odpowiedz = await fetch(url);
+      
+      if (!odpowiedz.ok) {
+        throw new Error(`Błąd HTTP! Status: ${odpowiedz.status}`);
       }
-
-      const data = await response.json();
-      apiMessage = data.title; // Update the variable with the message from the JSON
+      
+      const dane = await odpowiedz.json();
+      daneZBackendu = JSON.stringify(dane, null, 2); // Formatujemy JSON dla czytelności
 
     } catch (error) {
-      // If something goes wrong, display an error message
-      console.error('Failed to fetch from API:', error);
-      errorMessage = `Failed to connect to the API. Is the Django server running? Error: ${error.message}`;
-      apiMessage = 'Connection failed.';
+      console.error('Nie udało się pobrać danych:', error);
+      daneZBackendu = 'Wystąpił błąd podczas ładowania danych.';
     }
   }
-
 </script>
 
 <main>
-  <h1>Svelte + Django Communication Test</h1>
-  
-  <button on:click={testApiConnection}>
-    Test API Connection
-  </button>
-  
-  <hr />
-  
-  <h2>Message from Backend:</h2>
-  <p>{apiMessage}</p>
-
-  {#if errorMessage}
-    <p style="color: red;">{errorMessage}</p>
-  {/if}
+    <br>
+  strona główna
+    <br>
 </main>
 
 <style>
-  main {
-    font-family: sans-serif;
-    text-align: center;
-    padding: 2em;
-  }
-  button {
-    padding: 10px 20px;
-    font-size: 1rem;
-    cursor: pointer;
-  }
+ 
 </style>
-
-  

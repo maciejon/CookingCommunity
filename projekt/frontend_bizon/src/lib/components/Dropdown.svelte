@@ -3,6 +3,7 @@
 */ -->
 <script>
     export let title;
+    export let wartosc ='';
     /*@type {boolean} */
     export let is_child = false;
     export let font_size = '16px';
@@ -13,7 +14,7 @@
 
 <div class="dropdown" class:is-child={is_child} style:font-size={font_size}>
   {#if content && content.length > 0}
-    <a href="{title}">
+    <a href="{wartosc}">
       {title}
     </a>
     <div class="dropdown-content">
@@ -24,11 +25,11 @@
              <svelte:self title={dropdown_option.etykieta} content={dropdown_option.children} is_child={true} font_size={font_size}/>
              </div>
              {:else}
-             <div class="no_children">
-              <a href="{dropdown_option.wartosc}">
-            {dropdown_option.etykieta}
+             <a href="{dropdown_option.wartosc}">
+              <div class="no_children">
+                {dropdown_option.etykieta}
+              </div>
             </a>  
-            </div>
             {/if}  
           </div>
         {/each}

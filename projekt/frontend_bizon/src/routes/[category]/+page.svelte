@@ -3,11 +3,22 @@
 
   export let data: PageData;
 
-  const slug = data.slug;
-  const apiData = data.apiData;
+  const recipes = data.recipes;
+  const categoryName = data.name;
+
 </script>
 
-<h1>Strona dla sluga: {slug}</h1>
+<h1>Przepisy w kategorii: {categoryName}</h1>
 
-<h2>Dane z API:</h2>
-<pre>{JSON.stringify(apiData, null, 2)}</pre>
+{#if recipes && recipes.length > 0}
+  <ul>
+    {#each recipes as recipe (recipe.id)}
+      <li>
+        <h3>{recipe.name}</h3>
+        <p>Czas przygotowania: {recipe.preparation_time} minut</p>
+      </li>
+    {/each}
+  </ul>
+{:else}
+  <p>W tej kategorii nie ma jeszcze żadnych przepisów.</p>
+{/if}

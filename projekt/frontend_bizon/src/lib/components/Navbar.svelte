@@ -6,6 +6,7 @@
 
 const naSkroty = {
     title: 'NA SKRÓTY',
+    wartosc: 'na-skroty',
     content: [
         { etykieta: 'Szybkie obiady', wartosc: 'szybkie-obiady' },
         { etykieta: 'Dania w 20 minut', wartosc: 'dania-w-20-minut' },
@@ -106,7 +107,7 @@ const desery = {
   <nav> <!--  panel nawigacyjny  -->
     <div class="category-buttons">
       <div style=" padding-left: 20px; padding-right: 20px;;">
-        <Dropdown title={naSkroty.title} content={naSkroty.content} />
+        <Dropdown title={naSkroty.title} wartosc={naSkroty.wartosc} content={naSkroty.content} />
       </div>
       <div style=" padding-left: 20px; padding-right: 20px;">
         <Dropdown title={posilki.title} content={posilki.content} />

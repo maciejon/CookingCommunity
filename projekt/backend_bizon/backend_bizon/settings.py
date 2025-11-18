@@ -93,6 +93,16 @@ DATABASES = {
     }
 }
 
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.mysql',
+#         'NAME': 'janpawe3',
+#         'USER': 'janpawe3',
+#         'PASSWORD': os.getenv('DB_PASSWORD'),
+#         'HOST': 'mysql.agh.edu.pl',
+#         'PORT': '3306'
+#     }
+# }
 
 # Password validation
 # https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators

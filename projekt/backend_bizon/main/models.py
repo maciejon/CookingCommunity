@@ -33,7 +33,7 @@ class Recipe(models.Model):
     preparation_time = models.PositiveIntegerField()
     number_of_views = models.PositiveIntegerField(default=0)
 
-    image = models.TextField(max_length=255, blank=True, null=True)
+    image = models.CharField(max_length=255, blank=True, null=True)
 
     slug = models.SlugField(max_length=100, unique=True, blank=True)
 
@@ -46,7 +46,7 @@ class RecipeStep(models.Model):
     step_number = models.PositiveIntegerField()
     recipe = models.ForeignKey(Recipe, on_delete=models.CASCADE, related_name='steps')
     text = models.TextField()
-    image = models.TextField(max_length=255, blank=True, null=True)
+    image = models.CharField(max_length=255, blank=True, null=True)
 
     class Meta:
         ordering = ['step_number']

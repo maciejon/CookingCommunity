@@ -39,4 +39,10 @@ def category_detail(request, slug):
     if request.method == 'GET':
         serializer = CategoryDetailSerializer(category)  
         return Response(serializer.data)
+
+GO_IMAGE_SERVICE_URL = "http://localhost:8080/upload"
+
+def recipe_upload_view(request):
+
+    return render('recipe_upload.html')
         

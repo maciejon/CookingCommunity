@@ -46,6 +46,7 @@ class RecipeStep(models.Model):
     step_number = models.PositiveIntegerField()
     recipe = models.ForeignKey(Recipe, on_delete=models.CASCADE, related_name='steps')
     text = models.TextField()
+    image = models.TextField(max_length=255, blank=True, null=True)
 
     class Meta:
         ordering = ['step_number']

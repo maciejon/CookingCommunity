@@ -8,5 +8,6 @@ urlpatterns = [
     path('hello/', hello_world, name='hello-world'),
     # path('recipes/<int:id>/', recipe_detail, name='recipe-detail'),
     path('recipe/<slug:slug>/', recipe_detail, name='recipe-detail'),
-    path('category/<slug:slug>/', category_detail, name='category-detail')
+    path('category/<slug:slug>/', category_detail, name='category-detail'),
+    # path('recipe_upload/', recipe_upload_view, 'recipe_upload')
 ]

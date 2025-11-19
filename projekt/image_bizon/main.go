@@ -18,17 +18,23 @@ func main() {
 
 	imageHandler := handler.NewImageHandler(cfg.StaticPath)
 
-	r := chi.NewRouter()
+	rout := chi.NewRouter()
 
-	r.Use(middleware.Logger)
+	rout.Use(middleware.Logger)
 
-	r.Get("/{imageName}", imageHandler.ServeImage)
-	// r.Post("/upload", imageHandler.UploadImage)
+	rout.Get("/{imageName}", imageHandler.ServeImage)
+
+	// chronione, wymagaja podania api key
+	rout.Group(func(rout chi.Router) {
+		rout.Use(handler.AuthMiddleware(cfg.APIKey))
+		rout.Post("/upload", imageHandler.UploadImage)
+		rout.Delete("/{imageName}", imageHandler.DeleteImage)
+	})
 
 	addr := fmt.Sprintf(":%s", cfg.Port)
 	log.Printf("Listen on http://localhost%s", addr)
 
-	err := http.ListenAndServe(addr, r)
+	err := http.ListenAndServe(addr, rout)
 	if err != nil {
 		log.Fatalf("Error: %v", err)
 	}

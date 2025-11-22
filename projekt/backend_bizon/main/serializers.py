@@ -5,7 +5,7 @@ from .models import *
 class RecipeCategoryDetailSerializer(serializers.ModelSerializer):
     class Meta:
         model = Recipe
-        fields = ['id', 'name', 'slug', 'image', 'preparation_time'] # Tylko kluczowe dane
+        fields = ['id', 'name', 'slug', 'image', 'preparation_time', 'number_of_views'] # Tylko kluczowe dane
 
 # wiekszy do kategorii calej
 class CategoryDetailSerializer(serializers.ModelSerializer):

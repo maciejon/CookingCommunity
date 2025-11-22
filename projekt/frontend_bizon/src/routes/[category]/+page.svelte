@@ -22,8 +22,7 @@
           <div class="recipe-name">
           {recipe.name}
           </div>
-          <img src="http://localhost:8080/rauch_klawiaturnik.jpg" alt="localhost:8080/{recipe.image}" class="recipe-photo">
-          <!-- <img src="{getImage(recipe.image)}" alt="localhost:8080/{recipe.image}" class="recipe-photo">\ -->
+          <img src="{getImage(recipe.image)}" alt="localhost:8080/{recipe.image}" class="recipe-photo">
         </div>
         </a>
     {/each}

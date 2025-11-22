@@ -4,6 +4,8 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import status
 
+import requests
+
 from .models import *
 from .serializers import *
 
@@ -14,7 +16,10 @@ def hello_world(request):
 
 @api_view(['GET'])
 def index(request):
-    content = {'title': 'Mam smaka na ptaka'}
+    recipes = Recipe.objects.all().order_by('-number_of_views')[:5]
+    content = []
+    for r in recipes:
+        content.append(RecipeCategoryDetailSerializer(r).data)
     
     return Response(content, status=status.HTTP_200_OK)
 
@@ -27,6 +32,8 @@ def recipe_detail(request, slug):
 
     if request.method == 'GET':
         serializer = RecipeDetailSerializer(recipe)
+        recipe.number_of_views_up()
+        recipe.save()
         return Response(serializer.data)
 
 @api_view(['GET'])
@@ -40,9 +47,21 @@ def category_detail(request, slug):
         serializer = CategoryDetailSerializer(category)  
         return Response(serializer.data)
 
-GO_IMAGE_SERVICE_URL = "http://localhost:8080/upload"
+# ----------------------------------------------------------------------------------------------
+# ------- OBSŁUGA IMAGE -------
+# ----------------------------------------------------------------------------------------------
+
+IMAGE_UPLOAD_URL = "http://localhost:8080/upload"
 
 def recipe_upload_view(request):
 
-    return render('recipe_upload.html')
+    return render(request, 'recipe_upload.html')
+
+def images_view(request):
+
+    return render(request, 'images.html')
+
+def delete_image(request):
+
+    return 
         

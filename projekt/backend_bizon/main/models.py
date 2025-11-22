@@ -41,6 +41,9 @@ class Recipe(models.Model):
         if not self.slug:
             self.slug = slugify(self.name)
         super().save(*args, **kwargs)
+    
+    def number_of_views_up(self):
+        self.number_of_views+=1
 
 class RecipeStep(models.Model):
     step_number = models.PositiveIntegerField()
@@ -49,7 +52,7 @@ class RecipeStep(models.Model):
     image = models.CharField(max_length=255, blank=True, null=True)
 
     class Meta:
-        ordering = ['step_number']
+        ordering = ['recipe', 'step_number']
         unique_together = ('recipe', 'step_number')
 
 class RecipeIngredient(models.Model):
@@ -92,26 +95,29 @@ class RecipeIngredient(models.Model):
     def unit(self):
         if not self.unit_choice or self.quantity is None or self.unit_choice == self.Unit.BLANK:
             return ""
-        
+
         if self.unit_choice in self.simple_units:
             return self.unit_choice
 
         forms = self.UNIT_FORMS.get(self.unit_choice)
+
+        if forms is None:
+            return self.unit_choice
 
         # przemyslec czy tam moze None kiedys wejsc
         if isinstance(self.quantity, Decimal) and self.quantity % 1 != 0:
             return forms[1]
 
         q_int = int(self.quantity)
-        
+
         # liczba poj
         if q_int == 1:
-            return forms[0] 
+            return forms[0]
 
         # ostatni znak 2,3,4 -> koncowka -i; z wyjatkiem nascie
         last_digit = q_int % 10
         if last_digit in [2, 3, 4] and q_int % 100 not in [12, 13, 14]:
-            return forms[1] 
-        
+            return forms[1]
+
         # inne liczby to mnoga -ek
         return forms[2]

@@ -18,7 +18,7 @@
         {#each ingredients as ingredient}
           <Ingredient left="{ingredient.ingredient.name} " right="{+ingredient.quantity} {ingredient.unit}"/> 
         {/each}
-        <div style="color=gray; font-size: 14px;">Wskazówka: Kliknij w składnik, aby oznaczyć go jako przygotowany.</div>
+        <div style="color=gray; font-size: 14px;">Kliknij w składnik, aby oznaczyć go jako przygotowany.</div>
       </div>
       <div class="main-recipe">
         <div style="font-size:36px;">{data.name}</div>

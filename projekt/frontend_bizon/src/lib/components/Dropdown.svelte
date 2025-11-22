@@ -25,7 +25,7 @@
              <svelte:self title={dropdown_option.etykieta} content={dropdown_option.children} is_child={true} font_size={font_size}/>
              </div>
              {:else}
-             <a href="{dropdown_option.wartosc}">
+             <a href="/{dropdown_option.wartosc}">
               <div class="no_children">
                 {dropdown_option.etykieta}
               </div>

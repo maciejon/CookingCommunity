@@ -128,19 +128,23 @@ const desery = {
   </nav>
 
   <div class="second-div">
-    <div class="main_logo">
-      <a href="http://localhost:5173" >
-        <img style="width: 100%" src="/main_logo.png" alt="mam smaka naptaka">
-      </a>
-    </div>
+      <div class="main_logo">
+        <a href="http://localhost:5173" >
+          <img style="width: 100%" src="/main_logo.png" alt="mam smaka naptaka">
+        </a>
+      </div>
 
-    <div style="width: 50%; margin: auto; ">
+  <div style="padding-right:6%; width:100%; align-items: center">
       <form class="search-bar" method="POST">
                 <input type="text" name="query" placeholder="Wyszukaj..." class="search-input">
                 <button type="submit" class="search-button">
                     <img src="/search_icon.png" alt="Szukaj" class="search-icon">
                 </button>
             </form>
+  </div>    
+
+    <div class="log-in-icon">
+      <img src="/user_site_icon.png" alt="logowanie" width="20px;">
     </div>
 
   </div>
@@ -176,9 +180,10 @@ const desery = {
     background-color: #e0e0e0; 
     border-radius: 5px;
     padding: 5px;
-    width: 100%;
-    max-width: 500px;
+    width: 38%;
+    max-width: 1000px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    margin: auto;
 }
 
 .search-input {
@@ -210,5 +215,14 @@ const desery = {
 
 .search-button:hover {
     transform: scale(1.1);
+}
+.log-in-icon{
+  right:0;
+  width: 5%;
+}
+.log-in-icon img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
 }
 </style>

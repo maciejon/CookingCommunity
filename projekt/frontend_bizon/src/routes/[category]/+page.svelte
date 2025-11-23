@@ -3,8 +3,8 @@
 
   export let data: PageData;
 
-  const recipes = data.recipes;
-  const categoryName = data.name;
+  $: recipes = data.recipes;
+  $: categoryName = data.name;
 
   function getImage(image_name: string) : string{
     return "http://localhost:8080/"+image_name;

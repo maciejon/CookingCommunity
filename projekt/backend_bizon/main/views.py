@@ -51,15 +51,21 @@ def category_detail(request, slug):
 # ------- OBSŁUGA IMAGE -------
 # ----------------------------------------------------------------------------------------------
 
-IMAGE_UPLOAD_URL = "http://localhost:8080/upload"
+IMAGE_URL = "http://localhost:8080/"
 
 def recipe_upload_view(request):
 
     return render(request, 'recipe_upload.html')
 
 def images_view(request):
+    recipes = Recipe.objects.prefetch_related('steps').all()
 
-    return render(request, 'images.html')
+    context = {
+        'recipes': recipes,
+        'image_base_url': IMAGE_URL
+    }
+
+    return render(request,'images.html', context)
 
 def delete_image(request):
 

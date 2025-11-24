@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.auth.models import User
 from decimal import Decimal
 from django.utils.text import slugify
+from django.core.validators import MinValueValidator, MaxValueValidator
 
 class Category(models.Model):
     name = models.CharField(max_length=255, unique=True)
@@ -121,3 +122,19 @@ class RecipeIngredient(models.Model):
 
         # inne liczby to mnoga -ek
         return forms[2]
+
+class Review(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='reviews') 
+    recipe = models.ForeignKey(Recipe, on_delete=models.CASCADE, related_name='reviews') # mozna recipe.reviews.all() uzyc
+    stars = models.PositiveIntegerField(
+        validators=[MinValueValidator(1), MaxValueValidator(5)]
+    )
+    text = models.TextField(blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        unique_together = ('user', 'recipe')
+    
+    def __str__(self):
+        return f"{self.recipe.name} - {self.user.username} - {self.stars} *"

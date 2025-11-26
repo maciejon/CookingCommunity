@@ -15,11 +15,13 @@ def hello_world(request):
     return Response(content, status=status.HTTP_200_OK)
 
 @api_view(['GET'])
-def index(request):
+def top5(request):
     recipes = Recipe.objects.all().order_by('-number_of_views')[:5]
-    content = []
+    listaaa = []
     for r in recipes:
-        content.append(RecipeCategoryDetailSerializer(r).data)
+        listaaa.append(RecipeCategoryDetailSerializer(r).data)
+    
+    content = {'top5' : listaaa}
     
     return Response(content, status=status.HTTP_200_OK)
 

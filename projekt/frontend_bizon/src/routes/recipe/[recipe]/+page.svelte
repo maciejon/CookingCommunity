@@ -9,7 +9,6 @@
   function getImage(image_name: string) : string{
     return "http://localhost:8080/"+image_name;
   }
-
 </script>
 
 <main>
@@ -28,7 +27,7 @@
         {/each}
       </div>
     </div>
-    <pre>{JSON.stringify(data, null, 2)}</pre>
+    <!-- <pre>{JSON.stringify(data, null, 2)}</pre> -->
 </main>
 
 <style>

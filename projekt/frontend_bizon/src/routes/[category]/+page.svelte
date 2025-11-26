@@ -30,12 +30,13 @@
 {:else}
   <p>W tej kategorii nie ma jeszcze żadnych przepisów.</p>
 {/if}
-<pre>{JSON.stringify(recipes, null, 2)}</pre>
+<!-- <pre>{JSON.stringify(recipes, null, 2)}</pre> -->
 
 <style>
   .recipes-grid{
     display: grid;
     grid-template-columns: auto auto auto;
+    margin-bottom: 50px;
   }
   .recipe-name{
     width: 100%; 

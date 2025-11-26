@@ -3,6 +3,7 @@
 */ -->
 <script>
     export let title;
+    export let wartosc ='';
     /*@type {boolean} */
     export let is_child = false;
     export let font_size = '16px';
@@ -13,7 +14,9 @@
 
 <div class="dropdown" class:is-child={is_child} style:font-size={font_size}>
   {#if content && content.length > 0}
-    {title}
+    <a href="{wartosc}">
+      {title}
+    </a>
     <div class="dropdown-content">
         {#each content as dropdown_option}
         <div class="dropdown-option">
@@ -22,9 +25,11 @@
              <svelte:self title={dropdown_option.etykieta} content={dropdown_option.children} is_child={true} font_size={font_size}/>
              </div>
              {:else}
-             <div class="no_children">
-            {dropdown_option.etykieta}
-            </div>
+             <a href="/{dropdown_option.wartosc}">
+              <div class="no_children">
+                {dropdown_option.etykieta}
+              </div>
+            </a>  
             {/if}  
           </div>
         {/each}
@@ -33,15 +38,21 @@
 </div>
 
 <style>
+  a{
+    color: inherit;
+    text-decoration: none;
+  }
 .dropdown{
   position: relative;
   padding: 5px;
   padding-right: 8px;
+  cursor: default;
 }
 
 .no_children{
   padding:5px;
   padding-right: 8px;
+  cursor: pointer;
 }
 
 .dropdown-content {
@@ -49,10 +60,11 @@
   position: absolute;
   /* border: 1px solid rgb(224,224,224); */
   border: 1px solid rgb(0,0,0);
-  /* z-index: 10; */
+  z-index: 10;
   background-color: white;
   padding-top: 8px;
   padding-bottom: 8px;
+  filter: drop-shadow(3px 3px 2px rgba(0, 0, 0, 0.4));
 }
 
 .dropdown:hover > .dropdown-content { /* strzałka > sprawia że działa to tylko na dziecko 1 rzędu*/

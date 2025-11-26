@@ -29,7 +29,7 @@ class IngredientSerializer(serializers.ModelSerializer):
 class RecipeStepSerializer(serializers.ModelSerializer):
     class Meta:
         model = RecipeStep
-        fields = ['id','step_number', 'recipe', 'text']
+        fields = ['step_number', 'image', 'text']
 
 class RecipeIngredientSerializer(serializers.ModelSerializer):
     ingredient = IngredientSerializer(read_only=True)

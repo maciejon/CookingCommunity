@@ -2,16 +2,19 @@
   import type { PageData } from './$types';
 
   export let data: PageData;
-  $: recipes = data.top5;
+
+  $: recipes = data.recipes;
+  $: categoryName = data.name;
 
   function getImage(image_name: string) : string{
     return "http://localhost:8080/"+image_name;
   }
+
 </script>
 
-<main>
-    <br>
-  {#if recipes && recipes.length > 0}
+<h1>Przepisy w kategorii: {categoryName} <br></h1>
+
+{#if recipes && recipes.length > 0}
     <div class="recipes-grid">
     {#each recipes as recipe (recipe.id)}
         <a href="recipe/{recipe.slug}">
@@ -27,15 +30,13 @@
 {:else}
   <p>W tej kategorii nie ma jeszcze żadnych przepisów.</p>
 {/if}
-  <pre>{JSON.stringify(data, null, 2)}</pre>
-    <br>
-</main>
+<!-- <pre>{JSON.stringify(recipes, null, 2)}</pre> -->
 
 <style>
   .recipes-grid{
     display: grid;
     grid-template-columns: auto auto auto;
-    margin-bottom: 50px;  
+    margin-bottom: 50px;
   }
   .recipe-name{
     width: 100%; 

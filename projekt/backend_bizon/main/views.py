@@ -4,6 +4,8 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import status
 
+from django.db.models import Q, Case, When, Value, IntegerField
+
 import requests
 
 from .models import *
@@ -48,6 +50,35 @@ def category_detail(request, slug):
     if request.method == 'GET':
         serializer = CategoryDetailSerializer(category)  
         return Response(serializer.data)
+    
+@api_view(['GET'])
+def search(request):
+    search_query = request.query_params.get('query', None)
+
+    if search_query:
+        recipes = Recipe.objects.filter(
+            Q(name__icontains=search_query) | 
+            Q(description__icontains=search_query) |
+            Q(ingredients__ingredient__name__icontains=search_query)
+        ).distinct()
+    else:
+        recipes = Recipe.objects.none()
+    
+    # punktujemy waznosc podobienstwa do hasla
+    recipes = recipes.annotate(
+        relevance=Case(
+            When(name__icontains=search_query, then=Value(10)),
+            When(description__icontains=search_query, then=Value(5)),
+            When(ingredients__ingredient__name__icontains=search_query, then=Value(1)),
+            
+            default=Value(0),
+            output_field=IntegerField(),
+        )
+    ).order_by('-relevance')
+
+    serializer = RecipeCategoryDetailSerializer(recipes, many=True)
+
+    return Response(serializer.data, status=status.HTTP_200_OK)
 
 # ----------------------------------------------------------------------------------------------
 # ------- LOGOWANIE -------

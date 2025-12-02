@@ -15,6 +15,19 @@ class CategoryDetailSerializer(serializers.ModelSerializer):
         model = Category
         fields = ['id', 'name', 'slug', 'recipes']
 
+class UserSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = User
+        fields = ['username']
+
+class ReviewSerializer(serializers.ModelSerializer):
+    user = UserSerializer(read_only=True)
+    
+    class Meta:
+        model = Review
+        fields = ['user', 'stars', 'text', 'created_at', 'updated_at']
+
 # prosty do wyswietlenia w podstronie przepisu
 class CategorySerializer(serializers.ModelSerializer):
     class Meta:
@@ -43,6 +56,7 @@ class RecipeDetailSerializer(serializers.ModelSerializer):
     categories = CategorySerializer(many=True, read_only=True)
     steps = RecipeStepSerializer(many=True, read_only=True)
     ingredients = RecipeIngredientSerializer(many=True, read_only=True)
+    reviews = ReviewSerializer(many=True)
 
     class Meta:
         model = Recipe
@@ -56,7 +70,8 @@ class RecipeDetailSerializer(serializers.ModelSerializer):
             'slug',
             'categories',
             'steps',
-            'ingredients'
+            'ingredients',
+            'reviews'
         ]
 
 

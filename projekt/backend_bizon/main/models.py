@@ -45,6 +45,10 @@ class Recipe(models.Model):
     
     def number_of_views_up(self):
         self.number_of_views+=1
+    
+    def __str__(self):
+        category_names = ", ".join([category.name for category in self.categories.all()])
+        return f"{self.name} - {category_names}"
 
 class RecipeStep(models.Model):
     step_number = models.PositiveIntegerField()

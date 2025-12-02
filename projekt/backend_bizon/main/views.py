@@ -48,10 +48,14 @@ def category_detail(request, slug):
         return Response(serializer.data)
 
 # ----------------------------------------------------------------------------------------------
+# ------- LOGOWANIE -------
+# ----------------------------------------------------------------------------------------------
+
+# ----------------------------------------------------------------------------------------------
 # ------- OBSŁUGA IMAGE -------
 # ----------------------------------------------------------------------------------------------
 
-IMAGE_URL = "http://localhost:8080/"
+IMAGE_BASE_URL = "http://localhost:8080/"
 
 def recipe_upload_view(request):
 
@@ -62,12 +66,12 @@ def images_view(request):
 
     context = {
         'recipes': recipes,
-        'image_base_url': IMAGE_URL
+        'image_base_url': IMAGE_BASE_URL
     }
 
     return render(request,'images.html', context)
 
 def delete_image(request):
 
-    return 
+    return redirect('images')
         

@@ -30,3 +30,9 @@ class RecipeIngredientAdmin(admin.ModelAdmin):
     list_display = ('recipe__name', 'ingredient__name', 'quantity', 'unit_choice')  
     search_fields = ('recipe__name', 'ingredient__name', 'unit_choice')  
     list_filter = ('recipe__name', 'ingredient__name')
+
+@admin.register(Review)
+class ReviewAdmin(admin.ModelAdmin):
+    list_display = ('recipe__name', 'user', 'stars')
+    search_fields = ('recipe__name', 'user', 'stars')
+    list_filter = ('recipe__name', 'user', 'stars')

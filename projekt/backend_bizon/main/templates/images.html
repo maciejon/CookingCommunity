@@ -5,12 +5,28 @@
 </head>
 <body>
 
-    <div>
-        <h1>All images</h1>
-       {% for recipe in recipes %}
-       
-       {% endfor %}
-    </div>
+    {% for recipe in recipes %}
+        <div style="border: 1px solid #060606ff; margin-bottom: 20px; padding: 10px;">
+            <h2>{{ recipe.name }}</h2>
+            
+            {% if recipe.image %}
+                <img src="{{ image_base_url }}{{ recipe.image }}" style="max-width: 300px;">
+            {% endif %}
+
+            <h3>Images for steps:</h3>
+            <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                {% for step in recipe.steps.all %}
+                    {% if step.image %}
+                        <div>
+                            <p>Step {{ step.step_number }}</p>
+                            <img src="{{ image_base_url }}{{ step.image }}" style="width: 150px; height: 150px; object-fit: cover;">
+                        </div>
+                    {% endif %}
+                {% endfor %}
+            </div>
+        </div>
+    {% endfor %}
+
 
 </body>
 </html>

@@ -1,12 +1,14 @@
 from django.shortcuts import render, redirect, get_object_or_404
 
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
-from rest_framework import status
+from rest_framework import status, generics
+from rest_framework.permissions import AllowAny, IsAuthenticated
 
 from django.db.models import Q, Case, When, Value, IntegerField
 
 import requests
+from django.conf import settings
 
 from .models import *
 from .serializers import *
@@ -80,9 +82,60 @@ def search(request):
 
     return Response(serializer.data, status=status.HTTP_200_OK)
 
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def create_review(request):
+    # input: { "recipe_id": 1, "stars": 1, "text": "niejadalne!" } uwaga dac id
+    recipe_id = request.data.get('recipe_id')
+    if not recipe_id:
+        return Response({"detail": "insert recipe id"}, status=status.HTTP_400_BAD_REQUEST)
+
+    recipe = get_object_or_404(Recipe, id=recipe_id)
+
+    if Review.objects.filter(user=request.user, recipe=recipe).exists():
+        return Response(
+            {"detail": "one user one review"}, 
+            status=status.HTTP_409_CONFLICT
+        )
+    serializer = ReviewSerializer(data=request.data)
+    
+    if serializer.is_valid():
+        serializer.save(user=request.user, recipe=recipe)
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+    
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+@api_view(['PUT'])
+@permission_classes([IsAuthenticated])
+def update_review(request):
+    recipe_id = request.data.get('recipe_id')
+    if not recipe_id:
+        return Response({"detail": "insert recipe id"}, status=status.HTTP_400_BAD_REQUEST)
+
+    try:
+        review = Review.objects.get(user=request.user, recipe__id=recipe_id)
+    except Review.DoesNotExist:
+        return Response(
+            {"detail": "review not found"}, 
+            status=status.HTTP_404_NOT_FOUND
+        )
+
+    serializer = ReviewSerializer(review, data=request.data, partial=True)
+
+    if serializer.is_valid():
+        serializer.save()
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 # ----------------------------------------------------------------------------------------------
 # ------- LOGOWANIE -------
 # ----------------------------------------------------------------------------------------------
+
+class RegisterView(generics.CreateAPIView):
+    queryset = User.objects.all()
+    permission_classes = (AllowAny,) 
+    serializer_class = RegisterSerializer
 
 # ----------------------------------------------------------------------------------------------
 # ------- OBSŁUGA IMAGE -------
@@ -91,6 +144,8 @@ def search(request):
 IMAGE_BASE_URL = "http://localhost:8080/"
 
 def recipe_upload_view(request):
+    if request.method == 'POST':
+        request.headers['API-Key'] = settings.IMAGE_SECRET_KEY
 
     return render(request, 'recipe_upload.html')
 

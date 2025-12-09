@@ -90,7 +90,7 @@ func (h *ImageHandler) UploadImage(w http.ResponseWriter, r *http.Request) {
 	ext := strings.ToLower(filepath.Ext(safeFilename))
 	if !allowedExtensions[ext] {
 		log.Println("Error:", err)
-		http.Error(w, "File type not allowed", http.StatusBadRequest)
+		http.Error(w, "File ext not allowed", http.StatusBadRequest)
 		return
 	}
 

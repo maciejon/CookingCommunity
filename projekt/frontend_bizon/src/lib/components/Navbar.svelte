@@ -106,22 +106,22 @@ const desery = {
 <header> <!-- nagłówek strony  -->
   <nav> <!--  panel nawigacyjny  -->
     <div class="category-buttons">
-      <div style=" padding-left: 20px; padding-right: 20px;;">
+      <div class="category-button">
         <Dropdown title={naSkroty.title} wartosc={naSkroty.wartosc} content={naSkroty.content} />
       </div>
-      <div style=" padding-left: 20px; padding-right: 20px;">
+      <div class="category-button">
         <Dropdown title={posilki.title} content={posilki.content} />
       </div>
-      <div style=" padding-left: 20px; padding-right: 20px;">
+      <div class="category-button">
         <Dropdown title={skladniki.title} content={skladniki.content} />
       </div>
-      <div style=" padding-left: 20px; padding-right: 20px;">
+      <div class="category-button">
         <Dropdown title={naZdrowie.title} content={naZdrowie.content} />
       </div>
-      <div style=" padding-left: 20px; padding-right: 20px;">
+      <div class="category-button">
         <Dropdown title={okazje.title} content={okazje.content} />
       </div>
-      <div style=" padding-left: 20px; padding-right: 20px;">
+      <div class="category-button">
         <Dropdown title={desery.title} content={desery.content} />
       </div>
     </div>
@@ -134,7 +134,7 @@ const desery = {
         </a>
       </div>
 
-  <div style="padding-right:6%; width:100%; align-items: center">
+  <div style="padding-right:6%; width:100%; align-items: center;">
       <form class="search-bar" method="POST">
                 <input type="text" name="query" placeholder="Wyszukaj..." class="search-input">
                 <button type="submit" class="search-button">
@@ -157,7 +157,6 @@ const desery = {
   }
   nav{
     position:relative;
-    
   }
   .main_logo{
     width: 11%;
@@ -168,9 +167,16 @@ const desery = {
     color:white;
     display: flex;
     justify-content: center;
-    padding-left: 20%;
-    padding-right: 20%;
+    /* padding-left: 20%;
+    padding-right: 20%; */
   }
+
+  @media(min-width:800px){
+    .category-button{
+      padding-left: 20px; padding-right: 20px;
+    }
+  }
+
   .second-div{
     display: flex;
   }

@@ -35,7 +35,8 @@
 <style>
   .recipes-grid{
     display: grid;
-    grid-template-columns: auto auto auto;
+    /* grid-template-columns: auto auto auto; */
+    grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
     margin-bottom: 50px;
   }
   .recipe-name{

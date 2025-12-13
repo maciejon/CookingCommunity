@@ -27,15 +27,21 @@
 {:else}
   <p>W tej kategorii nie ma jeszcze żadnych przepisów.</p>
 {/if}
-  <pre>{JSON.stringify(data, null, 2)}</pre>
+  <!-- <pre>{JSON.stringify(data, null, 2)}</pre> -->
     <br>
 </main>
 
 <style>
   .recipes-grid{
     display: grid;
-    grid-template-columns: auto auto auto;
+    /* grid-template-columns: auto auto auto; */
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
     margin-bottom: 50px;  
+  }
+  @media (min-width:800px){
+  .recipes-grid{
+    grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+  }
   }
   .recipe-name{
     width: 100%; 

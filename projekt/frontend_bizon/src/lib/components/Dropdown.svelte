@@ -59,8 +59,9 @@
   display: none;
   position: absolute;
   /* border: 1px solid rgb(224,224,224); */
+  border-radius: 2px;
   border: 1px solid rgb(0,0,0);
-  z-index: 10;
+  z-index: 11;
   background-color: white;
   padding-top: 8px;
   padding-bottom: 8px;

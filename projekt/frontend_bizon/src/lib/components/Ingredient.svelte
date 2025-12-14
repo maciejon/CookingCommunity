@@ -21,6 +21,7 @@
     border: 1px solid rgb(235,235,235);
     border-radius: 3px;
     display: flex;
+    margin:2px;
   }
   .ingredient.active{
     color: rgb(235,235,235);

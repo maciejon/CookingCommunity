@@ -1,6 +1,7 @@
 <script>
     // Import komponentu Svelte
     import Dropdown from './Dropdown.svelte';
+    import LogInPanel from '$lib/components/LogInPanel.svelte';
 
     // Definicje danych dla każdego dropdownu
 
@@ -143,9 +144,13 @@ const desery = {
             </form>
   </div>    
 
-    <div class="log-in-icon">
+    <LogInPanel let:isActive let:toggle>
+    <!-- svelte-ignore a11y_click_events_have_key_events -->
+    <!-- svelte-ignore a11y_no_static_element_interactions -->
+    <div class="log-in-icon" on:click={toggle}>
       <img src="/user_site_icon.png" alt="logowanie" width="20px;">
     </div>
+    </LogInPanel>
 
   </div>
 </header>

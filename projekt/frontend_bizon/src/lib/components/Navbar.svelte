@@ -159,6 +159,8 @@ const desery = {
   header{
     border-bottom: 1px solid rgb(224,224,224);
     width: 100%;
+    position: relative; /* te rzeczy są żeby panel logowania nie był pod przepisami */
+    z-index: 100;
   }
   nav{
     position:relative;

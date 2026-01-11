@@ -69,11 +69,10 @@
                     </svg>
                     </span>
                 {/if}</button>
-        
+        {#if error}<p style="text-align:center;color:red">{error}</p>{/if}
             <button type="submit" class="submit-button" style="width: 100px;">Zaloguj</button>
         </form>
-        {#if error}<p>{error}</p>{/if}
-        <a href="/register" class="submit-button" style="width: 90%;"> Nie masz konta? Przejdź do rejestracji.</a>
+        <a href="/register" class="submit-button" style="width: 90%;" on:click={toggle}> Nie masz konta? Przejdź do rejestracji.</a>
         {:else}
         <div class="success-container" in:scale>
             Zalogowano. Witaj, {username}
@@ -88,9 +87,6 @@
     main{
         display: contents;
         z-index:10;
-    }
-    .inActive{
-        display:none;
     }
     .panel{
         position:fixed;

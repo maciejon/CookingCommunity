@@ -20,12 +20,13 @@
 
 <style>
   footer {
-    background-color: rgb(240,240,240);
+    background-color: rgba(240, 240, 240, 0.247);
     border-top: 1px solid rgb(224,224,224); 
     text-align: center; 
     padding: 20px; 
     color: rgb(80, 80, 80); 
     font-size: 14px;
     width: 100%;
+    backdrop-filter: blur(10px);
   }
 </style>

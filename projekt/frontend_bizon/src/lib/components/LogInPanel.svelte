@@ -143,9 +143,10 @@
         border-radius: 10px;
         filter: drop-shadow(2px 2px 2px rgba(0, 0, 0, 0.4));
         border: 1px solid rgb(68, 68, 68);
-        background-color: #F0F0F0;
+        background-color: rgba(255, 255, 255, 0.507);
         cursor: pointer;
         padding:3px;
+        backdrop-filter: blur(10px);
     }
     .submit-button:hover{
     transition: transform 0.3s ease-in-out;

@@ -171,7 +171,7 @@ func AuthMiddleware(secretKey string) func(http.Handler) http.Handler {
 			// 	fmt.Printf("Invalid or missing API-Key\n")
 			// 	http.Error(w, "Invalid or missing API-Key", http.StatusForbidden)
 			// 	return
-			// }
+			// } 
 			next.ServeHTTP(w, r)
 		})
 	}

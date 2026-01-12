@@ -44,14 +44,21 @@
     </div>
     <div class="reviews">
       <div style="text-align:center">OCENY</div>
-      {#each reviews as review}
-        <Review content="{review.text}" stars={review.stars} username="{review.user.username}"></Review>
-      {/each}
+      {#if (reviews.length > 0)}
+        {#each reviews as review}
+          <Review content="{review.text}" stars={review.stars} username="{review.user.username}"></Review>
+        {/each}
+        {:else}
+        <div style="margin-left: 20px;">Brak recenzji</div>
+      {/if}
     </div>
     <!-- <pre>{JSON.stringify(data, null, 2)}</pre> -->
 </main>
 
 <style>
+  *{
+    font-size:20px;
+  }
   main{
     background-color: #E3EADE;
     padding-bottom:10px;
@@ -118,12 +125,12 @@
     margin-top: 60px;
     display: flex; 
     justify-content: center;
-    background-color: rgb(255, 255, 255, 0.7);
+    background-color: rgb(255, 255, 255, 0.4);
     position: absolute;
     border-radius: 5px;
     z-index: 10; 
     /* -webkit-backdrop-filter: blur(1px); */
-    backdrop-filter: blur(1px);
+    backdrop-filter: blur(10px);
   }
 
   .preparation{

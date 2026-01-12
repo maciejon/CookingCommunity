@@ -8,5 +8,7 @@ TODO.md
 *.jpg
 *.png
 *.webp
+*.bat
+*.sh
 
 insert_do_bazy.txt

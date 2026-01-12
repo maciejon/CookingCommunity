@@ -1,5 +1,7 @@
 <script>
-    import { fade, fly } from 'svelte/transition';
+    import { fly } from 'svelte/transition';
+    import { goto } from '$app/navigation';
+    import { auth } from '../../lib/authStore.ts';
 
     let username = '';
     let email = '';
@@ -36,14 +38,36 @@
         
         if (res.ok) {
             message = "Konto utworzone! Możesz się zalogować.";
+            const res = await fetch('http://127.0.0.1:8000/token/', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ username, password })
+        });
+
+        const data = await res.json();
+
+            localStorage.setItem('access', data.access);
+            localStorage.setItem('refresh', data.refresh);
+            auth.set({ 
+                isLoggedIn: true, 
+                accessToken: data.access, 
+                refreshToken: data.refresh 
+            });
+            goto("/")
             errorExists = false;
         } else {
-            message = "Błąd: " + (data.detail || JSON.stringify(data));
             errorExists = true;
             errors = data;
         }
     }
+    
+
+
+
 </script>
+
+
+
 
 <div class="page-container">
     <div class="panel" in:fly={{ y: 200, duration: 600 }}>
@@ -87,7 +111,6 @@
                 <p class="status-message" class:error-text={errorExists}>{message}</p>
             {/if}
 
-            <!-- Wyświetlanie listy błędów -->
             {#if errorExists}
                 <div class="error-box">
                     {#each Object.values(errors) as errGroup}
@@ -117,7 +140,7 @@
 
     .panel {
         width: 100%;
-        max-width: 400px; /* Maksymalna szerokość dla czytelności */
+        max-width: 400px;
         padding: 20px;
         border-radius: 20px;
         background-color: rgba(255, 255, 255, 0.4);

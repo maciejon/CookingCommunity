@@ -10,7 +10,6 @@
         showPassword = !showPassword;
     }
 
-
     let username = '';
     let password = '';
     let error = '';

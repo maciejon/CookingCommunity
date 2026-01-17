@@ -3,7 +3,10 @@ from django.shortcuts import render, redirect, get_object_or_404
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
 from rest_framework import status, generics
+from rest_framework.views import APIView 
 from rest_framework.permissions import AllowAny, IsAuthenticated
+from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
+from rest_framework_simplejwt.tokens import RefreshToken, TokenError
 
 from django.db.models import Q, Case, When, Value, IntegerField
 
@@ -128,9 +131,99 @@ def update_review(request):
 
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def recipe_upload(request):
+    if request.method == 'POST':
+        request.headers['API-Key'] = settings.IMAGE_SECRET_KEY
+
+    return render(request, 'recipe_upload.html')
+
 # ----------------------------------------------------------------------------------------------
 # ------- LOGOWANIE -------
 # ----------------------------------------------------------------------------------------------
+
+class CookieTokenObtainPairView(TokenObtainPairView):
+    def finalize_response(self, request, response, *args, **kwargs):
+        if response.data.get('access'):
+            access_max_age = settings.SIMPLE_JWT['ACCESS_TOKEN_LIFETIME'].total_seconds()
+            refresh_max_age = settings.SIMPLE_JWT['REFRESH_TOKEN_LIFETIME'].total_seconds()
+            
+            # cookie access
+            response.set_cookie(
+                'access_token',
+                response.data['access'],
+                max_age=access_max_age,
+                httponly=True,
+                samesite='Lax',
+                secure=settings.SIMPLE_JWT['AUTH_COOKIE_SECURE'],
+            )
+            
+            # cookie refresh
+            if response.data.get('refresh'):
+                response.set_cookie(
+                    'refresh_token',
+                    response.data['refresh'],
+                    max_age=refresh_max_age,
+                    httponly=True,
+                    samesite='Lax',
+                    secure=settings.SIMPLE_JWT['AUTH_COOKIE_SECURE'],
+                )
+            
+            del response.data['access']
+            if response.data.get('refresh'):
+                del response.data['refresh']
+                
+        return super().finalize_response(request, response, *args, **kwargs)
+
+class CookieTokenRefreshView(TokenRefreshView):
+    def post(self, request, *args, **kwargs):
+        if 'refresh_token' in request.COOKIES:
+            request.data['refresh'] = request.COOKIES['refresh_token']
+        
+        response = super().post(request, *args, **kwargs)
+        
+        if response.data.get('access'):
+            access_max_age = settings.SIMPLE_JWT['ACCESS_TOKEN_LIFETIME'].total_seconds()
+            response.set_cookie(
+                'access_token',
+                response.data['access'],
+                max_age=access_max_age,
+                httponly=True,
+                samesite='Lax',
+                secure=settings.SIMPLE_JWT['AUTH_COOKIE_SECURE'],
+            )
+            del response.data['access']
+
+        # rotacja
+        if response.data.get('refresh'):
+            refresh_max_age = settings.SIMPLE_JWT['REFRESH_TOKEN_LIFETIME'].total_seconds()
+            response.set_cookie(
+                'refresh_token',
+                response.data['refresh'],
+                max_age=refresh_max_age,
+                httponly=True,
+                samesite='Lax',
+                secure=settings.SIMPLE_JWT['AUTH_COOKIE_SECURE'],
+            )
+            del response.data['refresh']
+            
+        return response
+
+class LogoutView(APIView):
+    def post(self, request):
+        try:
+            refresh_token = request.COOKIES.get('refresh_token')
+            if refresh_token:
+                token = RefreshToken(refresh_token)
+                token.blacklist()
+        except TokenError:
+            pass
+
+        response = Response({"message": "Wylogowano"}, status=status.HTTP_200_OK)
+        response.delete_cookie('access_token')
+        response.delete_cookie('refresh_token')
+        return response
 
 class RegisterView(generics.CreateAPIView):
     queryset = User.objects.all()
@@ -143,11 +236,11 @@ class RegisterView(generics.CreateAPIView):
 
 IMAGE_BASE_URL = "http://localhost:8080/"
 
-def recipe_upload_view(request):
-    if request.method == 'POST':
-        request.headers['API-Key'] = settings.IMAGE_SECRET_KEY
+# def recipe_upload_view(request):
+#     if request.method == 'POST':
+#         request.headers['API-Key'] = settings.IMAGE_SECRET_KEY
 
-    return render(request, 'recipe_upload.html')
+#     return render(request, 'recipe_upload.html')
 
 def images_view(request):
     recipes = Recipe.objects.prefetch_related('steps').all()

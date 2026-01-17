@@ -84,8 +84,8 @@
 
 <style>
     main{
+        position: absolute;
         display: contents;
-        z-index:10;
     }
     .panel{
         position:fixed;

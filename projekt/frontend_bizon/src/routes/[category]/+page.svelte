@@ -78,11 +78,11 @@
     margin:10px;
     display: flex; 
     justify-content: center;
-    background-color: rgba(255, 255, 255, 0.904);
+    background-color: rgba(255, 255, 255, 0.6);
     position: absolute;
     border-radius: 5px;
     z-index: 10; 
-    backdrop-filter: blur(1px);
+    backdrop-filter: blur(10px);
   }
 
   .recipe-name{

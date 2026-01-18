@@ -230,6 +230,36 @@ class RegisterView(generics.CreateAPIView):
     permission_classes = (AllowAny,) 
     serializer_class = RegisterSerializer
 
+    def create(self, request, *args, **kwargs):
+        response = super().create(request, *args, **kwargs)
+        user = User.objects.get(username=response.data['username'])
+        
+        refresh = RefreshToken.for_user(user)
+        access_token = str(refresh.access_token)
+        refresh_token = str(refresh)
+
+        access_max_age = settings.SIMPLE_JWT['ACCESS_TOKEN_LIFETIME'].total_seconds()
+        refresh_max_age = settings.SIMPLE_JWT['REFRESH_TOKEN_LIFETIME'].total_seconds()
+
+        response.set_cookie(
+            'access_token',
+            access_token,
+            max_age=access_max_age,
+            httponly=True,
+            samesite='Lax',
+            secure=settings.SIMPLE_JWT['AUTH_COOKIE_SECURE'],
+        )
+        response.set_cookie(
+            'refresh_token',
+            refresh_token,
+            max_age=refresh_max_age,
+            httponly=True,
+            samesite='Lax',
+            secure=settings.SIMPLE_JWT['AUTH_COOKIE_SECURE'],
+        )
+
+        return response
+
 # ----------------------------------------------------------------------------------------------
 # ------- OBSŁUGA IMAGE -------
 # ----------------------------------------------------------------------------------------------

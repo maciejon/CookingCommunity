@@ -1,15 +1,16 @@
-<script>
+<script lang="ts">
     import { fly } from 'svelte/transition';
     import { goto } from '$app/navigation';
-    import { auth } from '../../lib/authStore.ts';
+    import { isAuthenticated } from '../../lib/authStore';
 
     let username = '';
     let email = '';
     let password = '';
     let password_confirm = '';
+    
     let message = '';
     let errorExists = false;
-    let errors = {};
+    let errors: Record<string, string[]> = {}; 
 
     let showPassword = false;
     let showConfirmPassword = false;
@@ -20,6 +21,7 @@
     async function handleRegister() {
         message = "";
         errorExists = false;
+        errors = {};
 
         if (password !== password_confirm) {
             message = "Hasła nie są identyczne";
@@ -27,47 +29,41 @@
             return;
         }
 
-        const res = await fetch('http://127.0.0.1:8000/register/', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ username, password, password_confirm, email })
-        });
-
-        const data = await res.json();
-        console.log("Dane z serwera:", data);
-        
-        if (res.ok) {
-            message = "Konto utworzone! Możesz się zalogować.";
-            const res = await fetch('http://127.0.0.1:8000/token/', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ username, password })
-        });
-
-        const data = await res.json();
-
-            localStorage.setItem('access', data.access);
-            localStorage.setItem('refresh', data.refresh);
-            auth.set({ 
-                isLoggedIn: true, 
-                accessToken: data.access, 
-                refreshToken: data.refresh 
+        try {
+            const res = await fetch('http://127.0.0.1:8000/register/', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ username, password, password_confirm, email }),
+                credentials: 'include'
             });
-            goto("/")
-            errorExists = false;
-        } else {
+
+            const contentType = res.headers.get("content-type");
+            if (contentType && contentType.indexOf("application/json") !== -1) {
+                const data = await res.json();
+
+                if (res.ok) {
+                    message = "Konto utworzone! Logowanie...";
+                    isAuthenticated.set(true);
+                    
+                    setTimeout(() => goto("/"), 1000);
+                } else {
+                    errorExists = true;
+                    errors = data;
+                    if (data.detail) message = data.detail;
+                }
+            } else {
+                const text = await res.text();
+                console.error("Błąd serwera (HTML):", text);
+                message = "Błąd serwera. Sprawdź konsolę backendu.";
+                errorExists = true;
+            }
+        } catch (err) {
             errorExists = true;
-            errors = data;
+            message = "Błąd połączenia z API.";
+            console.error(err);
         }
     }
-    
-
-
-
 </script>
-
-
-
 
 <div class="page-container">
     <div class="panel" in:fly={{ y: 200, duration: 600 }}>

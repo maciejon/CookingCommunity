@@ -1,5 +1,5 @@
-<script>    
-    import { auth, logout } from '../authStore.ts';
+<script lang="ts">
+    import { logout } from '../authStore.ts';
     import { scale, fade, fly } from 'svelte/transition';
     let isActive=false;
     function toggle(){
@@ -10,31 +10,48 @@
         showPassword = !showPassword;
     }
 
+    import { apiFetch } from '$lib/api';
+    import { user, isAuthenticated } from '$lib/authStore.ts';
+    import type { ApiError } from '$lib/types';
+
     let username = '';
     let password = '';
-    let error = '';
+    let errorMessage = '';
 
     async function handleLogin() {
-        const res = await fetch('http://127.0.0.1:8000/token/', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ username, password })
-        });
-
-        const data = await res.json();
-
-        if (res.ok) {
-            localStorage.setItem('access', data.access);
-            localStorage.setItem('refresh', data.refresh);
-            auth.set({ 
-                isLoggedIn: true, 
-                accessToken: data.access, 
-                refreshToken: data.refresh 
+        try {
+            await apiFetch('/token/', {
+                method: 'POST',
+                body: JSON.stringify({ username, password })
             });
-        } else {
-            error = "Błędny login lub hasło";
+            
+            isAuthenticated.set(true);
+        } catch (err) {
+            const error = err as ApiError;
+            errorMessage = error.detail || 'Błąd logowania';
         }
     }
+    // async function handleLogin() {
+    //     const res = await fetch('http://127.0.0.1:8000/token/', {
+    //         method: 'POST',
+    //         headers: { 'Content-Type': 'application/json' },
+    //         body: JSON.stringify({ username, password })
+    //     });
+
+    //     const data = await res.json();
+
+    //     if (res.ok) {
+    //         localStorage.setItem('access', data.access);
+    //         localStorage.setItem('refresh', data.refresh);
+    //         auth.set({ 
+    //             isLoggedIn: true, 
+    //             accessToken: data.access, 
+    //             refreshToken: data.refresh 
+    //         });
+    //     } else {
+    //         error = "Błędny login lub hasło";
+    //     }
+    // }
 </script>
 
 <main>
@@ -48,8 +65,8 @@
         <svg on:click={() => isActive = false} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"stroke-width="1" stroke="#333333" fill="currentColor" class="X-button">
             <path fill-rule="evenodd" d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25Zm-1.72 6.97a.75.75 0 1 0-1.06 1.06L10.94 12l-1.72 1.72a.75.75 0 1 0 1.06 1.06L12 13.06l1.72 1.72a.75.75 0 1 0 1.06-1.06L13.06 12l1.72-1.72a.75.75 0 1 0-1.06-1.06L12 10.94l-1.72-1.72Z" clip-rule="evenodd" />
         </svg>
-        <div style="text-align:center;margin:8px;font-size:18px;">{!$auth.isLoggedIn ? "ZALOGUJ SIĘ" : "SUKCES"}</div>
-        {#if !$auth.isLoggedIn}
+        <div style="text-align:center;margin:8px;font-size:18px;">{!$isAuthenticated ? "ZALOGUJ SIĘ" : "SUKCES"}</div>
+        {#if !$isAuthenticated}
         <form on:submit|preventDefault={handleLogin}>
             <input type="text" class="input-text-box" bind:value={username} placeholder="Login" required />
             <input type={showPassword ? "text" : "password"}  class="input-text-box" bind:value={password} placeholder="Hasło" required />
@@ -68,7 +85,7 @@
                     </svg>
                     </span>
                 {/if}</button>
-        {#if error}<p style="text-align:center;color:red">{error}</p>{/if}
+        {#if errorMessage}<p style="text-align:center;color:red">{errorMessage}</p>{/if}
             <button type="submit" class="submit-button" style="width: 100px;">Zaloguj</button>
         </form>
         <a href="/register" class="submit-button" style="width: 90%;" on:click={toggle}> Nie masz konta? Przejdź do rejestracji.</a>

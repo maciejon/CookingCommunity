@@ -3,7 +3,7 @@
   import Ingredient from '$lib/components/Ingredient.svelte';
   import Step from '$lib/components/Step.svelte';
   import Review from '$lib/components/Review.svelte';
-  import { auth } from '$lib/authStore.ts'
+  import { isAuthenticated } from '$lib/authStore.ts'
 
   export let data: PageData;
   const ingredients = data.ingredients;
@@ -45,7 +45,7 @@
     </div>
     <div class="reviews">
       <div style="text-align:center">OCENY</div>
-      {#if $auth.isLoggedIn}
+      {#if $isAuthenticated}
       jestes zalogowany dodaj recenzje
       {:else}
       <div style="margin-left: 20px;">Zaloguj się aby dodać recenzję.</div>

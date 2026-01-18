@@ -1,7 +1,6 @@
 package handler
 
 import (
-	"crypto/subtle"
 	"fmt"
 	"io"
 	"log"
@@ -45,6 +44,12 @@ func (h *ImageHandler) ServeImage(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *ImageHandler) UploadImage(w http.ResponseWriter, r *http.Request) {
+	forcedFilename, ok := r.Context().Value(FilenameKey).(string)
+	if !ok {
+		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
+		return
+	}
+
 	r.ParseMultipartForm(10 << 20) // maks 10MB
 
 	file, handler, err := r.FormFile("file")
@@ -94,7 +99,11 @@ func (h *ImageHandler) UploadImage(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	destPath := filepath.Join(h.StaticPath, safeFilename)
+	// NAZWA NADANA NIE DANA
+	finalName := forcedFilename + ext
+
+	destPath := filepath.Join(h.StaticPath, finalName)
+
 	dst, err := os.Create(destPath)
 	if err != nil {
 		log.Println("Error:", err)
@@ -109,7 +118,7 @@ func (h *ImageHandler) UploadImage(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	fileURL := fmt.Sprintf("http://%s/%s", r.Host, safeFilename)
+	fileURL := fmt.Sprintf("http://%s/%s", r.Host, finalName)
 	response := fmt.Sprintf(`{"success": true, "message": "File %s uploaded successfully", "url": "%s"}`, handler.Filename, fileURL)
 
 	w.Header().Set("Content-Type", "application/json")
@@ -155,24 +164,4 @@ func (h *ImageHandler) DeleteImage(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
 	w.Write([]byte(response))
-}
-
-// autoryzacja z api key, w headarze żądania trzeba podac "API-Key"
-func AuthMiddleware(secretKey string) func(http.Handler) http.Handler {
-	return func(next http.Handler) http.Handler {
-		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-			providedKey := r.Header.Get("API-Key")
-			if subtle.ConstantTimeCompare([]byte(providedKey), []byte(secretKey)) != 1 {
-				http.Error(w, "Invalid API-Key", http.StatusForbidden)
-				return
-			}
-			// to jest rzekomo głupie
-			// if providedKey == "" || providedKey != secretKey {
-			// 	fmt.Printf("Invalid or missing API-Key\n")
-			// 	http.Error(w, "Invalid or missing API-Key", http.StatusForbidden)
-			// 	return
-			// } 
-			next.ServeHTTP(w, r)
-		})
-	}
 }

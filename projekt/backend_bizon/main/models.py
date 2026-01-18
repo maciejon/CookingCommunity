@@ -29,6 +29,7 @@ class Ingredient(models.Model):
 class Recipe(models.Model):
     name = models.CharField(max_length=255)
     categories = models.ManyToManyField(Category, related_name="recipes")
+    created_by = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True, related_name='recipes')
 
     description = models.TextField(blank=True)
     preparation_time = models.PositiveIntegerField()
@@ -37,7 +38,7 @@ class Recipe(models.Model):
     image = models.CharField(max_length=255, blank=True, null=True)
 
     slug = models.SlugField(max_length=100, unique=True, blank=True)
-
+    
     def save(self, *args, **kwargs):
         if not self.slug:
             self.slug = slugify(self.name)

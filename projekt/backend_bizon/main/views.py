@@ -10,11 +10,15 @@ from rest_framework_simplejwt.tokens import RefreshToken, TokenError
 
 from django.db.models import Q, Case, When, Value, IntegerField
 
+import jwt
+import time
 import requests
 from django.conf import settings
 
 from .models import *
 from .serializers import *
+
+IMAGE_BASE_URL = "http://localhost:8080/"
 
 @api_view(['GET'])
 def hello_world(request):
@@ -131,13 +135,160 @@ def update_review(request):
 
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-@api_view(['POST'])
+@api_view(['DELETE'])
 @permission_classes([IsAuthenticated])
-def recipe_upload(request):
-    if request.method == 'POST':
-        request.headers['API-Key'] = settings.IMAGE_SECRET_KEY
+def delete_image(request):
+    recipe_id = request.data.get('id')
+    
+    if not recipe_id:
+        return Response({"error": "no id"}, status=400)
 
-    return render(request, 'recipe_upload.html')
+    recipe = get_object_or_404(Recipe, id=recipe_id, created_by=request.user)
+    
+    if not recipe.image:
+        return Response({"message": "no photo for recipe"}, status=200)
+
+    image_slug = recipe.image
+
+    try:
+        response = requests.delete(
+            f"{IMAGE_BASE_URL}{image_slug}",
+            headers={"API-Key": settings.IMAGE_SECRET_KEY},
+            timeout=5
+        )
+        
+        if response.status_code not in [200, 404]:
+            return Response({"error": "IMAGE service error"}, status=502)
+            
+    except requests.RequestException:
+        return Response({"error": "IMAGE service down"}, status=503)
+
+    recipe.image = None
+    recipe.save()
+
+    return Response(status=200)
+
+# ----------------------------------------------------------------------------------------------
+# ------- KOBYŁA DO UPLOADU -------
+# ----------------------------------------------------------------------------------------------
+
+class RecipeManageView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get_recipe_safe(self, recipe_id, user):
+        recipe = get_object_or_404(Recipe, id=recipe_id)
+        
+        if recipe.created_by != user and not user.is_superuser:
+            return None 
+            
+        return recipe
+
+    def get(self, request):
+        categories = Category.objects.all()
+        ingredients = Ingredient.objects.all()
+
+        units = [
+            {"value": value, "label": label} 
+            for value, label in RecipeIngredient.Unit.choices
+        ]
+
+        return Response({
+            "categories": CategorySerializer(categories, many=True).data,
+            "ingredients": IngredientSerializer(ingredients, many=True).data,
+            "units": units
+        }, status=status.HTTP_200_OK)
+    
+    # upload
+    def post(self, request):
+        serializer = RecipeCreateSerializer(data=request.data)
+
+        if serializer.is_valid():
+            recipe:Recipe = serializer.save(created_by=request.user)
+            
+            img_slug = f"r_{recipe.id}_{int(time.time())}"
+            recipe.image = img_slug
+            recipe.save()
+            
+            payload = {
+                "sub": request.user.id,
+                "action": "upload_image",
+                "filename": img_slug,  # nazwa pliku wymuszona
+                "exp": int(time.time()) + 300
+            }
+            token = jwt.encode(payload, settings.IMAGE_SECRET_KEY, algorithm="HS256")
+            
+            return Response({
+                "Upload-Token": token,
+                "Upload-Url": IMAGE_BASE_URL + "upload"
+            }, status=201)
+            
+        return Response(serializer.errors, status=400)
+    
+    # aktualizacja
+    def put(self, request):
+        recipe_id = request.data.get('id')
+        if not recipe_id:
+            return Response({"error": "no id"}, status=400)
+            
+        recipe = self.get_recipe_safe(recipe_id, request.user)
+
+        if recipe is None:
+            return Response({"error": "Nie można edytowac nie swojego przepisu"}, status=403)
+        
+        serializer = RecipeCreateSerializer(recipe, data=request.data, partial=True)
+        
+        if serializer.is_valid():
+            with transaction.atomic():
+                recipe = serializer.save()
+                
+                response_data = serializer.data
+                
+                # takie cos jak dokleic update_image
+                if request.data.get('update_image'):
+                    new_slug = f"r_{recipe.id}_{int(time.time())}"
+                    recipe.image = new_slug
+                    recipe.save()
+                    
+                    payload = {
+                        "sub": request.user.id,
+                        "action": "upload_image",
+                        "filename": new_slug,
+                        "exp": int(time.time()) + 300
+                    }
+                    token = jwt.encode(payload, settings.IMAGE_SECRET_KEY, algorithm="HS256")
+                    
+                    response_data["Upload-Token"] = token
+                    response_data["Upload-Url"] = IMAGE_BASE_URL + "upload"
+            
+            return Response(response_data, status=200)
+            
+        return Response(serializer.errors, status=400)
+
+    def delete(self, request):
+        recipe_id = request.data.get('id') or request.query_params.get('id')
+        
+        if not recipe_id:
+            return Response({"error": "no id"}, status=400)
+            
+        recipe = self.get_recipe_safe(recipe_id, request.user)
+
+        if recipe is None:
+            return Response({"error": "Nie można edytowac nie swojego przepisu"}, status=403)
+        
+        if recipe.image:
+            try:
+                requests.delete(
+                    f"{IMAGE_BASE_URL}{recipe.image}", 
+                    headers={"API-Key": settings.IMAGE_SECRET_KEY},
+                    timeout=5
+                )
+            except requests.RequestException:
+                print(f"error while deleting {recipe.image}")
+
+        recipe.delete()
+        
+        return Response(status=200)
+
 
 # ----------------------------------------------------------------------------------------------
 # ------- LOGOWANIE -------
@@ -264,8 +415,6 @@ class RegisterView(generics.CreateAPIView):
 # ------- OBSŁUGA IMAGE -------
 # ----------------------------------------------------------------------------------------------
 
-IMAGE_BASE_URL = "http://localhost:8080/"
-
 # def recipe_upload_view(request):
 #     if request.method == 'POST':
 #         request.headers['API-Key'] = settings.IMAGE_SECRET_KEY
@@ -281,8 +430,4 @@ def images_view(request):
     }
 
     return render(request,'images.html', context)
-
-def delete_image(request):
-
-    return redirect('images')
         

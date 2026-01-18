@@ -1,4 +1,5 @@
 const BASE_URL = 'http://localhost:8000/';
+import { type ApiError, type Recipe } from "./types.js";
 
 export async function apiFetch<T>(
     endpoint: string, 
@@ -43,5 +44,33 @@ async function tryRefresh(): Promise<boolean> {
         return res.ok;
     } catch {
         return false;
+    }
+}
+
+/**
+ * @param query
+ */
+export async function searchRecipes(query: string): Promise<Recipe[]> {
+    if (!query.trim()) return [];
+
+    const API_URL = `http://localhost:8000/search/?query=${encodeURIComponent(query)}`;
+
+    try {
+        const response = await fetch(API_URL, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+            }
+        });
+
+        if (!response.ok) {
+            throw new Error(`Błąd serwera: ${response.status}`);
+        }
+
+        const data: Recipe[] = await response.json();
+        return data;
+    } catch (error) {
+        console.error("Błąd podczas wyszukiwania przepisów:", error);
+        return [];
     }
 }

@@ -27,7 +27,7 @@ def hello_world(request):
 
 @api_view(['GET'])
 def top5(request):
-    recipes = Recipe.objects.all().order_by('-number_of_views')[:5]
+    recipes = Recipe.objects.all().order_by('-number_of_views')[:6]
     listaaa = []
     for r in recipes:
         listaaa.append(RecipeCategoryDetailSerializer(r).data)

@@ -147,12 +147,22 @@ class RegisterSerializer(serializers.ModelSerializer):
         model = User
         fields = ('username', 'password', 'password_confirm', 'email')
 
+    def validate_email(self, value):
+        email = value.lower()
+        
+        if User.objects.filter(email=email).exists():
+            raise serializers.ValidationError("Użytkownik z tym adresem email już istnieje.")
+        
+        return email
+
     def validate(self, attrs):
         if attrs['password'] != attrs['password_confirm']:
             raise serializers.ValidationError({"password": "Hasła nie są identyczne."})
         return attrs
 
     def create(self, validated_data):
+        validated_data.pop('password_confirm', None)
+
         user = User.objects.create_user(
             username=validated_data['username'],
             password=validated_data['password'],

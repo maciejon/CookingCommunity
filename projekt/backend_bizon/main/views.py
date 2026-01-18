@@ -15,6 +15,8 @@ import time
 import requests
 from django.conf import settings
 
+from .emails import send_welcome_email
+
 from .models import *
 from .serializers import *
 
@@ -384,6 +386,8 @@ class RegisterView(generics.CreateAPIView):
     def create(self, request, *args, **kwargs):
         response = super().create(request, *args, **kwargs)
         user = User.objects.get(username=response.data['username'])
+
+        send_welcome_email(user.email, user.username)
         
         refresh = RefreshToken.for_user(user)
         access_token = str(refresh.access_token)

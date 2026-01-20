@@ -18,7 +18,7 @@ from django.conf import settings
 from .models import *
 from .serializers import *
 
-IMAGE_BASE_URL = "http://localhost:8080/"
+IMAGE_BASE_URL = "http://127.0.0.1:8080/"
 
 @api_view(['GET'])
 def hello_world(request):
@@ -47,7 +47,14 @@ def recipe_detail(request, slug):
         serializer = RecipeDetailSerializer(recipe)
         recipe.number_of_views_up()
         recipe.save()
-        return Response(serializer.data)
+
+        data = serializer.data
+        
+        if request.user.is_authenticated:
+            data['requesting_user'] = request.user.username
+        else:
+            data['requesting_user'] = None
+        return Response(data)
 
 @api_view(['GET'])
 def category_detail(request, slug):
@@ -205,7 +212,7 @@ class RecipeManageView(APIView):
         if serializer.is_valid():
             recipe:Recipe = serializer.save(created_by=request.user)
             
-            img_slug = f"r_{recipe.id}_{int(time.time())}"
+            img_slug = f"r_{recipe.id}_{int(time.time())}.jpg"
             recipe.image = img_slug
             recipe.save()
             

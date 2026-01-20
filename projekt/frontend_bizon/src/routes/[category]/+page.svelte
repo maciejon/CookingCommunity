@@ -18,7 +18,7 @@
   {#if recipes && recipes.length > 0}
     <div class="recipes-grid">
     {#each recipes as recipe (recipe.id)}
-        <a href="recipe/{recipe.slug}">
+        <a href="/recipe/{recipe.slug}">
         <div class="single-recipe">
           <div class="recipe-name">
             {recipe.name}
@@ -50,7 +50,6 @@
   <br>
 </main>
 
-<!-- Style skopiowane z pliku 2 -->
 <style>
   main{
     background-color: #E3EADE;

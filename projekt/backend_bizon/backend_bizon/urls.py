@@ -24,6 +24,6 @@ urlpatterns = [
     path('register/', RegisterView.as_view(), name='register'),
     path('create_review/', create_review, name='create_review'),
     path('update_review/', update_review, name='update_review'),
-
-    path('recipe/upload/', RecipeManageView.as_view(), name='recipe-upload')
+    path('recipe_upload/', RecipeManageView.as_view(), name='recipe-upload'),
+    
 ]

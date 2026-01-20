@@ -52,39 +52,44 @@ class RecipeStepSerializer(serializers.ModelSerializer):
 
 class RecipeIngredientSerializer(serializers.ModelSerializer):
     ingredient = IngredientSerializer(read_only=True)
+
     unit = serializers.ReadOnlyField() 
     class Meta:
         model = RecipeIngredient
         fields = ['id', 'ingredient', 'quantity', 'unit']
 
+class RecipeIngredientSerializer_C(serializers.ModelSerializer):
+    ingredient = serializers.PrimaryKeyRelatedField(queryset=Ingredient.objects.all())
+
+    class Meta:
+        model = RecipeIngredient
+        fields = ['id', 'ingredient', 'quantity', 'unit_choice']
+
 class RecipeCreateSerializer(serializers.ModelSerializer):
     created_by = UserSerializer(read_only=True)
     categories = serializers.PrimaryKeyRelatedField(many=True, queryset=Category.objects.all())
     steps = RecipeStepSerializer(many=True, required=False)
-    ingredients = RecipeIngredientSerializer(many=True, required=False)
+    ingredients = RecipeIngredientSerializer_C(many=True, required=False)
     
     class Meta:
         model = Recipe
-        fields = ['name', 'description', 'preparation_time', 'categories', 'steps', 'ingredients']
+        fields = ['name', 'description', 'preparation_time', 'categories', 'steps', 'ingredients', 'created_by']
     
     def create(self, validated_data):
-        steps_data = validated_data.pop('steps', [])
-        ingredients_data = validated_data.pop('ingredients', [])
-        categories_data = validated_data.pop('categories', [])
-        
-        with transaction.atomic():
-            recipe = Recipe.objects.create(**validated_data)
-            
-            recipe.categories.set(categories_data)
-            
-            RecipeStep.objects.bulk_create([
-                RecipeStep(recipe=recipe, **step) for step in steps_data
-            ])
-            
-            RecipeIngredient.objects.bulk_create([
-                RecipeIngredient(recipe=recipe, **ing) for ing in ingredients_data
-            ])
-            
+        steps_data = validated_data.pop('steps')
+        ingredients_data = validated_data.pop('ingredients')
+        categories_data = validated_data.pop('categories')
+
+        recipe = Recipe.objects.create(**validated_data)
+
+        recipe.categories.set(categories_data)
+
+        for step_data in steps_data:
+            RecipeStep.objects.create(recipe=recipe, **step_data)
+
+        for ing_data in ingredients_data:
+            RecipeIngredient.objects.create(recipe=recipe, **ing_data)
+
         return recipe
 
     # do put - aktualizacja przepisu

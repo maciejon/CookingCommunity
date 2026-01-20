@@ -74,3 +74,50 @@ export async function searchRecipes(query: string): Promise<Recipe[]> {
         return [];
     }
 }
+
+export function getCookie(name: string): string | null {
+    const value = `; ${document.cookie}`;
+    const parts = value.split(`; ${name}=`);
+    if (parts.length === 2) return parts.pop()?.split(';').shift() || null;
+    return null;
+}
+
+export async function createReview(text: string, recipeId: number, stars: number) {
+    const response = await fetch(`${BASE_URL}create_review/`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': getCookie('csrftoken') || ''
+        },
+        credentials: 'include',
+        body: JSON.stringify({ 
+            stars: stars,
+            text: text,
+            recipe_id: recipeId 
+        })
+    });
+
+    console.log(JSON.stringify({ 
+            stars: 5,
+            text: text,
+            recipe_id: recipeId 
+        }))
+    return response.ok ? await response.json() : Promise.reject(response);
+}
+
+export async function updateReview(text: string, reviewId: number, stars: number) {
+    const response = await fetch(`${BASE_URL}update_review/`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': getCookie('csrftoken') || ''
+        },
+        credentials: 'include',
+        body: JSON.stringify({
+            stars: stars, 
+            review_text: text,
+            review_id: reviewId 
+        })
+    });
+    return response.ok ? await response.json() : Promise.reject(response);
+}

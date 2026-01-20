@@ -21,6 +21,8 @@ func main() {
 
 	rout := chi.NewRouter()
 
+	rout.Use(middleware.Logger)
+
 	rout.Use(cors.Handler(cors.Options{
 		AllowedOrigins:   []string{"http://localhost:5173", "http://localhost:8000"},
 		AllowedMethods:   []string{"GET", "POST", "DELETE"},
@@ -29,8 +31,6 @@ func main() {
 		AllowCredentials: true,
 		MaxAge:           300,
 	}))
-
-	rout.Use(middleware.Logger)
 
 	rout.Get("/{imageName}", imageHandler.ServeImage)
 

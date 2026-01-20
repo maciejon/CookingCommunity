@@ -92,6 +92,7 @@
         {:else}
         <div class="success-container" in:scale>
             Zalogowano. Witaj, {username}
+            <a href="/upload" class="submit-button">Dodaj własny przepis</a>
             <button class="submit-button" style="width: 90%;" on:click={logout}>Wyloguj</button>
         </div>
     {/if}
@@ -175,7 +176,23 @@
         padding: 20px;
         font-weight: bold;
     }
-    a{color: inherit;
+    a{
+    color: inherit;
     text-decoration: none;
     }
+    .upload-button{
+    display: block;
+        margin: 3px auto;
+        font-size:16px;
+        border-radius: 10px;
+        filter: drop-shadow(2px 2px 2px rgba(0, 0, 0, 0.4));
+        border: 1px solid rgb(68, 68, 68);
+        background-color: rgba(255, 255, 255, 0.507);
+        cursor: pointer;
+        padding:3px;
+        backdrop-filter: blur(10px);
+  }
+  .upload-button:hover{
+    transform: scale(1.1);
+  }
 </style>

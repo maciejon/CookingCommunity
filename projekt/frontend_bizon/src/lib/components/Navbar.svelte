@@ -1,107 +1,128 @@
-<script>
+<script lang="ts">
     // Import komponentu Svelte
     import Dropdown from './Dropdown.svelte';
     import LogInPanel from '$lib/components/LogInPanel.svelte';
 
-    // Definicje danych dla każdego dropdownu
+    // Definicja typów
+    interface NavItem {
+        etykieta: string;
+        wartosc: string;
+        children?: NavItem[];
+    }
 
-const naSkroty = {
-    title: 'NA SKRÓTY',
-    wartosc: 'na-skroty',
-    content: [
-        { etykieta: 'Szybkie obiady', wartosc: 'szybkie-obiady' },
-        { etykieta: 'Dania w 20 minut', wartosc: 'dania-w-20-minut' },
-        {
-            etykieta: 'Proste przepisy',
-            wartosc: 'proste-przepisy',
-            children: [
-                { etykieta: 'Sałatki', wartosc: 'salatki' },
-                { etykieta: 'Zupy', wartosc: 'zupy' },
-                { etykieta: 'Kanapki', wartosc: 'kanapki' }
-            ]
+    interface DropdownData {
+        title: string;
+        wartosc?: string;
+        content: NavItem[];
+    }
+
+    // Dane dla każdego dropdownu
+    const naSkroty: DropdownData = {
+        title: 'NA SKRÓTY',
+        wartosc: 'na-skroty',
+        content: [
+            { etykieta: 'Szybkie obiady', wartosc: 'szybkie-obiady' },
+            { etykieta: 'Dania w 20 minut', wartosc: 'dania-w-20-minut' },
+            {
+                etykieta: 'Proste przepisy',
+                wartosc: 'proste-przepisy',
+                children: [
+                    { etykieta: 'Sałatki', wartosc: 'salatki' },
+                    { etykieta: 'Zupy', wartosc: 'zupy' },
+                    { etykieta: 'Kanapki', wartosc: 'kanapki' }
+                ]
+            }
+        ]
+    };
+
+    const posilki: DropdownData = {
+        title: 'POSIŁKI',
+        content: [
+            { etykieta: 'Śniadania', wartosc: 'sniadania' },
+            {
+                etykieta: 'Obiady',
+                wartosc: 'obiady',
+                children: [
+                    { etykieta: 'Zupy', wartosc: 'zupy' },
+                    { etykieta: 'Dania główne', wartosc: 'dania-glowne' },
+                    { etykieta: 'Dodatki', wartosc: 'dodatki' }
+                ]
+            },
+            { etykieta: 'Kolacje', wartosc: 'kolacje' },
+            { etykieta: 'Przekąski', wartosc: 'przekaski' }
+        ]
+    };
+
+    const skladniki: DropdownData = {
+        title: 'SKŁADNIKI',
+        content: [
+            {
+                etykieta: 'Mięso',
+                wartosc: 'mieso',
+                children: [
+                    { etykieta: 'Kurczak', wartosc: 'kurczak' },
+                    { etykieta: 'Wołowina', wartosc: 'wolowina' },
+                    { etykieta: 'Wieprzowina', wartosc: 'wieprzowina' }
+                ]
+            },
+            { etykieta: 'Warzywa', wartosc: 'warzywa' },
+            { etykieta: 'Owoce', wartosc: 'owoce' },
+            { etykieta: 'Nabiał', wartosc: 'nabial' }
+        ]
+    };
+
+    const naZdrowie: DropdownData = {
+        title: 'NA ZDROWIE',
+        content: [
+            { etykieta: 'Fit przepisy', wartosc: 'fit-przepisy' },
+            { etykieta: 'Wegetariańskie', wartosc: 'wegetarianskie' },
+            { etykieta: 'Wegańskie', wartosc: 'weganskie' },
+            {
+                etykieta: 'Bez glutenu',
+                wartosc: 'bez-glutenu',
+                children: [
+                    { etykieta: 'Ciasta bezglutenowe', wartosc: 'ciasta-bezglutenowe' },
+                    { etykieta: 'Chleby bezglutenowe', wartosc: 'chleby-bezglutenowe' }
+                ]
+            }
+        ]
+    };
+
+    const okazje: DropdownData = {
+        title: 'OKAZJE',
+        content: [
+            { etykieta: 'Święta', wartosc: 'swieta' },
+            { etykieta: 'Urodziny', wartosc: 'urodziny' },
+            { etykieta: 'Grill', wartosc: 'grill' },
+            { etykieta: 'Impreza', wartosc: 'impreza' }
+        ]
+    };
+
+    const desery: DropdownData = {
+        title: 'DESERY',
+        content: [
+            {
+                etykieta: 'Ciasta',
+                wartosc: 'ciasta',
+                children: [
+                    { etykieta: 'Serniki', wartosc: 'serniki' },
+                    { etykieta: 'Czekoladowe', wartosc: 'czekoladowe' },
+                    { etykieta: 'Owocowe', wartosc: 'owocowe' }
+                ]
+            },
+            { etykieta: 'Lody', wartosc: 'lody' },
+            { etykieta: 'Ciasteczka', wartosc: 'ciasteczka' }
+        ]
+    };
+     import { goto } from '$app/navigation';
+    let searchQuery = '';
+
+    function handleSearch() {
+        if (searchQuery.trim()) {
+            // Przechodzimy na stronę /search z parametrem query
+            goto(`/search?query=${encodeURIComponent(searchQuery)}`);
         }
-    ]
-};
-
-const posilki = {
-    title: 'POSIŁKI',
-    content: [
-        { etykieta: 'Śniadania', wartosc: 'sniadania' },
-        {
-            etykieta: 'Obiady',
-            wartosc: 'obiady',
-            children: [
-                { etykieta: 'Zupy', wartosc: 'zupy' },
-                { etykieta: 'Dania główne', wartosc: 'dania-glowne' },
-                { etykieta: 'Dodatki', wartosc: 'dodatki' }
-            ]
-        },
-        { etykieta: 'Kolacje', wartosc: 'kolacje' },
-        { etykieta: 'Przekąski', wartosc: 'przekaski' }
-    ]
-};
-
-const skladniki = {
-    title: 'SKŁADNIKI',
-    content: [
-        {
-            etykieta: 'Mięso',
-            wartosc: 'mieso',
-            children: [
-                { etykieta: 'Kurczak', wartosc: 'kurczak' },
-                { etykieta: 'Wołowina', wartosc: 'wolowina' },
-                { etykieta: 'Wieprzowina', wartosc: 'wieprzowina' }
-            ]
-        },
-        { etykieta: 'Warzywa', wartosc: 'warzywa' },
-        { etykieta: 'Owoce', wartosc: 'owoce' },
-        { etykieta: 'Nabiał', wartosc: 'nabial' }
-    ]
-};
-
-const naZdrowie = {
-    title: 'NA ZDROWIE',
-    content: [
-        { etykieta: 'Fit przepisy', wartosc: 'fit-przepisy' },
-        { etykieta: 'Wegetariańskie', wartosc: 'wegetarianskie' },
-        { etykieta: 'Wegańskie', wartosc: 'weganskie' },
-        {
-            etykieta: 'Bez glutenu',
-            wartosc: 'bez-glutenu',
-            children: [
-                { etykieta: 'Ciasta bezglutenowe', wartosc: 'ciasta-bezglutenowe' },
-                { etykieta: 'Chleby bezglutenowe', wartosc: 'chleby-bezglutenowe' }
-            ]
-        }
-    ]
-};
-
-const okazje = {
-    title: 'OKAZJE',
-    content: [
-        { etykieta: 'Święta', wartosc: 'swieta' },
-        { etykieta: 'Urodziny', wartosc: 'urodziny' },
-        { etykieta: 'Grill', wartosc: 'grill' },
-        { etykieta: 'Impreza', wartosc: 'impreza' }
-    ]
-};
-
-const desery = {
-    title: 'DESERY',
-    content: [
-        {
-            etykieta: 'Ciasta',
-            wartosc: 'ciasta',
-            children: [
-                { etykieta: 'Serniki', wartosc: 'serniki' },
-                { etykieta: 'Czekoladowe', wartosc: 'czekoladowe' },
-                { etykieta: 'Owocowe', wartosc: 'owocowe' }
-            ]
-        },
-        { etykieta: 'Lody', wartosc: 'lody' },
-        { etykieta: 'Ciasteczka', wartosc: 'ciasteczka' }
-    ]
-};
+    }
 </script>
 <!-- padding-left: 20px; padding-right: 20px; -->
 <header> <!-- nagłówek strony  -->
@@ -136,14 +157,13 @@ const desery = {
       </div>
 
   <div style="padding-right:6%; width:100%; align-items: center;">
-      <form class="search-bar" method="POST">
-                <input type="text" name="query" placeholder="Wyszukaj..." class="search-input">
+      <form class="search-bar" on:submit|preventDefault={handleSearch}>
+                <input type="text" bind:value={searchQuery}  placeholder="Wyszukaj..." class="search-input">
                 <button type="submit" class="search-button">
                     <img src="/search_icon.png" alt="Szukaj" class="search-icon">
                 </button>
             </form>
-  </div>    
-
+  </div>
     <LogInPanel let:isActive let:toggle>
     <!-- svelte-ignore a11y_click_events_have_key_events -->
     <!-- svelte-ignore a11y_no_static_element_interactions -->

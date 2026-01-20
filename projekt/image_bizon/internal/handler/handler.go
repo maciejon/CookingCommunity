@@ -100,7 +100,8 @@ func (h *ImageHandler) UploadImage(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// NAZWA NADANA NIE DANA
-	finalName := forcedFilename + ext
+	// finalName := forcedFilename + ext
+	finalName := forcedFilename 
 
 	destPath := filepath.Join(h.StaticPath, finalName)
 

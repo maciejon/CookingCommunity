@@ -1,4 +1,5 @@
 <script lang="ts">
+    import { isAuthenticated } from '$lib/authStore.js';
   import type { PageData } from './$types';
 
   export let data: PageData;
@@ -15,7 +16,7 @@
   {#if recipes && recipes.length > 0}
     <div class="recipes-grid">
     {#each recipes as recipe (recipe.id)}
-        <a href="recipe/{recipe.slug}">
+        <a href="/recipe/{recipe.slug}">
         <div class="single-recipe">
           <div class="recipe-name">
           {recipe.name}
@@ -39,6 +40,9 @@
     </div>
 {:else}
   <p>W tej kategorii nie ma jeszcze żadnych przepisów.</p>
+{/if}
+{#if $isAuthenticated}
+    <a href="/upload" class="upload-button">Dodaj własny przepis</a>
 {/if}
   <!-- <pre>{JSON.stringify(data, null, 2)}</pre> -->
     <br>
@@ -122,5 +126,22 @@
   a{
     color: inherit;
     text-decoration: none;
+  }
+  .upload-button{
+    font-size:24px;
+    padding:24px;
+    width: 40%;
+    margin: auto;
+    display: flex; 
+    justify-content: center;
+    background-color: rgba(255, 255, 255, 0.6);
+    border-radius: 5px;
+    z-index: 10; 
+    /* -webkit-backdrop-filter: blur(1px); */
+    backdrop-filter: blur(10px);
+    transition: transform 0.3s ease-in-out;
+  }
+  .upload-button:hover{
+    transform: scale(1.1);
   }
 </style>

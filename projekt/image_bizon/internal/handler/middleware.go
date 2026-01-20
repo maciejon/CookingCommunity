@@ -49,6 +49,12 @@ func ValidateUploadToken(secretKey string) func(http.Handler) http.Handler {
 				return []byte(secretKey), nil
 			})
 
+			if err != nil {
+				fmt.Printf("BŁĄD JWT: %v", err) 
+				http.Error(w, "invalid token: "+err.Error(), http.StatusForbidden)
+				return
+			}
+
 			if err != nil || !token.Valid {
 				http.Error(w, "invalid token", http.StatusForbidden)
 				return

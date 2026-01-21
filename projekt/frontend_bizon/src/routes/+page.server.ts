@@ -1,4 +1,5 @@
 import type { PageServerLoad } from './$types';
+  import { apiFetch } from '$lib/api.ts';
 
 export const load: PageServerLoad = async ({  }) => {
 

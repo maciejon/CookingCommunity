@@ -102,9 +102,7 @@
 <div class="recipe-form">
     <h1>Nowy Przepis</h1>
 
-    {#if message.text}
-        <div class="alert {message.type}">{message.text}</div>
-    {/if}
+
 
     <form on:submit|preventDefault={saveRecipe}>
         <!-- PODSTAWOWE DANE -->
@@ -177,6 +175,9 @@
         <button type="submit" class="btn-main" disabled={loading}>
             {loading ? 'Trwa wysyłanie...' : 'Opublikuj przepis'}
         </button>
+        {#if message.text}
+            <div class="alert {message.type}">{message.text}</div>
+        {/if}
     </form>
 </div>
 </main>

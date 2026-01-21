@@ -36,6 +36,9 @@ def top5(request):
     
     content = {'top5' : listaaa}
     
+    # if request.user.is_authenticated:
+    #     content[]
+    
     return Response(content, status=status.HTTP_200_OK)
 
 @api_view(['GET'])

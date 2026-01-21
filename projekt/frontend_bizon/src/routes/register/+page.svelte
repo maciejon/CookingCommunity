@@ -2,6 +2,7 @@
     import { fly } from 'svelte/transition';
     import { goto } from '$app/navigation';
     import { isAuthenticated } from '../../lib/authStore';
+    import { apiFetch } from '$lib/api.js';
 
     let username = '';
     let email = '';
@@ -43,7 +44,12 @@
 
                 if (res.ok) {
                     message = "Konto utworzone! Logowanie...";
-
+                    await apiFetch('/token/', {
+                    method: 'POST',
+                    body: JSON.stringify({ username, password })
+                    });
+                    isAuthenticated.set(true);
+                    
                     setTimeout(() => goto("/"), 1000);
                 } else {
                     errorExists = true;

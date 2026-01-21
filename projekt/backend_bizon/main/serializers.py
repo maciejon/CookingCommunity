@@ -49,7 +49,6 @@ class RecipeStepSerializer(serializers.ModelSerializer):
         model = RecipeStep
         fields = ['step_number', 'image', 'text']
 
-
 class RecipeIngredientSerializer(serializers.ModelSerializer):
     ingredient = IngredientSerializer(read_only=True)
     unit = serializers.ReadOnlyField() 

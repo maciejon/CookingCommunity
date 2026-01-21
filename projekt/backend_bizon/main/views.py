@@ -49,7 +49,6 @@ def recipe_detail(request, slug):
         serializer = RecipeDetailSerializer(recipe)
         recipe.number_of_views_up()
         recipe.save()
-        return Response(serializer.data)
 
         data = serializer.data
         

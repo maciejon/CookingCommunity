@@ -39,6 +39,7 @@ def top5(request):
     return Response(content, status=status.HTTP_200_OK)
 
 @api_view(['GET'])
+@permission_classes([AllowAny])
 def recipe_detail(request, slug):
     try:
         recipe = Recipe.objects.get(slug=slug)
@@ -58,6 +59,7 @@ def recipe_detail(request, slug):
         else:
             data['requesting_user'] = None
             data['can_delete'] = 0
+
         return Response(data)
 
 @api_view(['GET'])
@@ -188,7 +190,6 @@ class RecipeManageView(APIView):
 
     def get_recipe_safe(self, recipe_id, user):
         recipe = get_object_or_404(Recipe, id=recipe_id)
-        
         if recipe.created_by != user and not user.is_superuser:
             return None 
             
@@ -280,7 +281,7 @@ class RecipeManageView(APIView):
         
         if not recipe_id:
             return Response({"error": "no id"}, status=400)
-            
+        
         recipe = self.get_recipe_safe(recipe_id, request.user)
 
         if recipe is None:

@@ -1,5 +1,6 @@
 <script lang="ts">
   import type { PageData } from './$types';
+  import { isAuthenticated } from '$lib/authStore.ts';
 
   export let data: PageData;
 
@@ -46,6 +47,9 @@
     </div>
   {:else}
     <p style="text-align: center; padding: 20px;">W tej kategorii nie ma jeszcze żadnych przepisów.</p>
+    {#if $isAuthenticated}
+    <a href="/upload" class="upload-button">Dodaj własny przepis</a>
+    {/if}
   {/if}
   <br>
 </main>
@@ -133,5 +137,22 @@
   a{
     color: inherit;
     text-decoration: none;
+  }
+    .upload-button{
+    font-size:24px;
+    padding:24px;
+    width: 40%;
+    margin: auto;
+    display: flex; 
+    justify-content: center;
+    background-color: rgba(255, 255, 255, 0.6);
+    border-radius: 5px;
+    z-index: 10; 
+    /* -webkit-backdrop-filter: blur(1px); */
+    backdrop-filter: blur(10px);
+    transition: transform 0.3s ease-in-out;
+  }
+  .upload-button:hover{
+    transform: scale(1.1);
   }
 </style>

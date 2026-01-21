@@ -43,8 +43,7 @@
 
                 if (res.ok) {
                     message = "Konto utworzone! Logowanie...";
-                    isAuthenticated.set(true);
-                    
+
                     setTimeout(() => goto("/"), 1000);
                 } else {
                     errorExists = true;

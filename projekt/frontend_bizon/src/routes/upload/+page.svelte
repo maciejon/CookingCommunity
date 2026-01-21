@@ -78,7 +78,7 @@
             }
 
             message = { text: "Przepis dodany pomyślnie!", type: "success" };
-            // Opcjonalnie resetForm();
+            //resetForm();
         } catch (error) {
             message = { text: "Błąd: " + error.message, type: "error" };
         } finally {

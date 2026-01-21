@@ -1,6 +1,7 @@
 <script lang="ts">
-    import { isAuthenticated } from '$lib/authStore.js';
+  import { isAuthenticated } from '$lib/authStore.ts';
   import type { PageData } from './$types';
+  import { fly } from 'svelte/transition';
 
   export let data: PageData;
   $: recipes = data.top5;
@@ -42,7 +43,7 @@
   <p>W tej kategorii nie ma jeszcze żadnych przepisów.</p>
 {/if}
 {#if $isAuthenticated}
-    <a href="/upload" class="upload-button">Dodaj własny przepis</a>
+    <a href="/upload" class="upload-button" in:fly={{ y: 300, duration: 500 }}>Dodaj własny przepis</a>
 {/if}
   <!-- <pre>{JSON.stringify(data, null, 2)}</pre> -->
     <br>

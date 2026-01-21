@@ -16,7 +16,7 @@ class IngredientAdmin(admin.ModelAdmin):
 @admin.register(Recipe)
 class RecipeAdmin(admin.ModelAdmin):
     list_display = ('name', 'slug', 'image')  
-    search_fields = ('name', 'categories', 'slug', 'image')  
+    search_fields = ('name', 'slug', 'image')  
     list_filter = ('categories',)
 
 @admin.register(RecipeStep)

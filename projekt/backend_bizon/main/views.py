@@ -51,6 +51,16 @@ def recipe_detail(request, slug):
         recipe.save()
         return Response(serializer.data)
 
+        data = serializer.data
+        
+        if request.user.is_authenticated:
+            data['requesting_user'] = request.user.username
+            data['can_delete'] = 1 if recipe.created_by == request.user or request.user.is_superuser else 0
+        else:
+            data['requesting_user'] = None
+            data['can_delete'] = 0
+        return Response(data)
+
 @api_view(['GET'])
 def category_detail(request, slug):
     try:

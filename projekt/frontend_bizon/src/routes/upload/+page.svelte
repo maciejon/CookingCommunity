@@ -32,7 +32,7 @@
     });
 
     function addStep() {
-        steps = [...steps, { order: steps.length + 1, description: "" }];
+        steps = [...steps, { step_number: steps.length + 1, text: "" }];
     }
     function removeStep(index) {
         steps = steps.filter((_, i) => i !== index).map((s, i) => ({ ...s, order: i + 1 }));

@@ -1,6 +1,7 @@
 <script>
   import '../styles/global.css';
   import Navbar from '$lib/components/Navbar.svelte';
+  export const prerender = true;
 </script>
 
 

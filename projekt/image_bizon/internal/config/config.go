@@ -1,6 +1,9 @@
 package config
 
-import "os"
+import (
+	"os"
+	"github.com/joho/godotenv"
+)
 
 type Config struct {
 	Port       string
@@ -9,6 +12,7 @@ type Config struct {
 }
 
 func New() *Config {
+	godotenv.Load() 
 	apiKey := os.Getenv("API_SECRET_KEY")
 	return &Config{
 		Port:       "8080",

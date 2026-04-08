@@ -2,11 +2,8 @@ from django.contrib import admin
 from django.urls import path
 from main.views import *
 
-# viewsy do logowania
-from rest_framework_simplejwt.views import (
-    TokenObtainPairView, 
-    TokenRefreshView,
-)
+from django.urls import path
+
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -18,12 +15,15 @@ urlpatterns = [
     path('category/<slug:slug>/', category_detail, name='category-detail'),
     path('search/', search, name='search'),
 
-    path('recipe_upload/', recipe_upload_view, name='recipe-upload'),
+    # path('recipe_upload/', recipe_upload_view, name='recipe-upload'),
     path('images/', images_view, name='images'),
 
-    path('token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
-    path('token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
+    path('token/', CookieTokenObtainPairView.as_view(), name='token_obtain_pair'),
+    path('token/refresh/', CookieTokenRefreshView.as_view(), name='token_refresh'),
+    path('logout/', LogoutView.as_view(), name='logout'),
     path('register/', RegisterView.as_view(), name='register'),
     path('create_review/', create_review, name='create_review'),
     path('update_review/', update_review, name='update_review'),
+    path('recipe_upload/', RecipeManageView.as_view(), name='recipe-upload'),
+    
 ]

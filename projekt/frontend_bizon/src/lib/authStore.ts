@@ -1,15 +1,15 @@
 import { writable } from 'svelte/store';
+import type { User } from './types';
+import { apiFetch } from '$lib/api.ts';
 
-const storedAccess = typeof window !== 'undefined' ? localStorage.getItem('access') : null;
+export const user = writable<User | null>(null);
+export const isAuthenticated = writable<boolean>(false);
 
-export const auth = writable({
-    isLoggedIn: !!storedAccess,
-    accessToken: storedAccess,
-    refreshToken: typeof window !== 'undefined' ? localStorage.getItem('refresh') : null,
-});
-
-export const logout = () => {
-    localStorage.removeItem('access');
-    localStorage.removeItem('refresh');
-    auth.set({ isLoggedIn: false, accessToken: null, refreshToken: null });
-};
+export async function logout() {
+        try {
+            await apiFetch('/logout/', { method: 'POST' });
+        } finally {
+            user.set(null);
+            isAuthenticated.set(false);
+        }
+    }
